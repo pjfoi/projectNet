@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SamenSterkerData
 {
-    class Company
+    public class Company
     {
         private int id;
 
