@@ -36,7 +36,7 @@ namespace SamenSterkerData
         {
             const string insertCommand =
                   "INSERT INTO Company " +
-                  "(Id, Name, Street, Zipcode, City, Country, Email, Phone)" +  
+                  "(Id, Name, Street, Zipcode, City, Country, Email, Phone) " +  
                   "VALUES (@Id, @Name, @Street, @Zipcode, @City, @Country, " +
                   "@Email, @Phone)";
 
