@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace ModernUIApp1.Content
+namespace UserInteface.Content
 {
     /// <summary>
     /// Interaction logic for About.xaml

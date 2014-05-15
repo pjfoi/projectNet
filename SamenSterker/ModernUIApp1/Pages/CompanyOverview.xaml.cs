@@ -13,19 +13,19 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace UserInteface.Content
+namespace UserInteface.Pages
 {
     /// <summary>
-    /// Interaction logic for SettingsAppearance.xaml
+    /// Interaction logic for CompanyOverview.xaml
     /// </summary>
-    public partial class SettingsAppearance : UserControl
+    public partial class CompanyOverview : UserControl
     {
-        public SettingsAppearance()
+        public CompanyOverview()
         {
             InitializeComponent();
 
-            // create and assign the appearance view model
-            this.DataContext = new SettingsAppearanceViewModel();
+            // create and assign the view model
+            this.DataContext = new CompanyOverviewViewModel();
         }
     }
 }

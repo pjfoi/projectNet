@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="UserInteface.Pages.Home"
+﻿<UserControl x:Class="UserInteface.Pages.CompanyOverview"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -8,7 +8,8 @@
     <Grid Style="{StaticResource ContentRoot}">
         <ScrollViewer>
             <StackPanel MinWidth="200">
-                <TextBlock Text="Coworking Samen Sterker" />
+                <TextBlock Text="Bedrijven Overzicht" Style="{StaticResource Heading2}" />
+                <DataGrid ItemsSource="{Binding Companies, Mode=OneWay}" IsReadOnly="True" />
             </StackPanel>
         </ScrollViewer>
     </Grid>
