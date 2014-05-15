@@ -46,8 +46,6 @@ build/
 *.log
 *.scc
 
-/SamenSterkerData/SamenSterkerDB.cs
-
 # Visual C++ cache files
 ipch/
 *.aps
@@ -156,3 +154,5 @@ $RECYCLE.BIN/
 
 # Mac desktop service store files
 .DS_Store
+
+SamenSterkerDB.cs
