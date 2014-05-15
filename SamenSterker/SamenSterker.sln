@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SamenSterkerData", "SamenSt
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "testApp", "testApp\testApp.csproj", "{7DD94DE3-EDB6-4301-9C1F-2EBF1EB10851}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserInterface", "ModernUIApp1\UserInterface.csproj", "{705BE1B9-F4F3-4C63-A284-C55C3C37C268}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{7DD94DE3-EDB6-4301-9C1F-2EBF1EB10851}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7DD94DE3-EDB6-4301-9C1F-2EBF1EB10851}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7DD94DE3-EDB6-4301-9C1F-2EBF1EB10851}.Release|Any CPU.Build.0 = Release|Any CPU
+		{705BE1B9-F4F3-4C63-A284-C55C3C37C268}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{705BE1B9-F4F3-4C63-A284-C55C3C37C268}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{705BE1B9-F4F3-4C63-A284-C55C3C37C268}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{705BE1B9-F4F3-4C63-A284-C55C3C37C268}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
