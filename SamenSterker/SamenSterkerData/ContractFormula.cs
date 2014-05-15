@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SamenSterkerData
 {
-    class ContractFormula
+    public class ContractFormula
     {
         private int id;
 
@@ -53,6 +53,11 @@ namespace SamenSterkerData
 
         public ContractFormula()
         {
+        }
+
+        public override string ToString()
+        {
+            return String.Format("{0} (id {1})", Description, Id);
         }
     }
 }

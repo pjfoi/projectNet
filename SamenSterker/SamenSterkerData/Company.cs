@@ -9,62 +9,63 @@ namespace SamenSterkerData
     public class Company
     {
         private int id;
+        private string name;
+        private string street;
+        private int zipcode;
+        private string city;
+        private string country;
+        private string email;
+        private string phone;
+        private int employees;
 
         public int Id
         {
             get { return id; }
             set { id = value; }
         }
-        private string name;
-
+        
         public string Name
         {
             get { return name; }
             set { name = value; }
         }
-        private string street;
+        
 
         public string Street
         {
             get { return street; }
             set { street = value; }
         }
-        private int zipcode;
-
+        
         public int Zipcode
         {
             get { return zipcode; }
             set { zipcode = value; }
         }
-        private string city;
-
+        
         public string City
         {
             get { return city; }
             set { city = value; }
         }
-        private string country;
-
+        
         public string Country
         {
             get { return country; }
             set { country = value; }
         }
-        private string email;
-
+        
         public string Email
         {
             get { return email; }
             set { email = value; }
         }
-        private string phone;
-
+        
         public string Phone
         {
             get { return phone; }
             set { phone = value; }
         }
-        private int employees;
 
         public int Employees
         {
@@ -74,6 +75,11 @@ namespace SamenSterkerData
 
         public Company()
         {
+        }
+
+        public override String ToString() 
+        {
+            return String.Format("{0} ({1})", Name, Id);
         }
     }
 }

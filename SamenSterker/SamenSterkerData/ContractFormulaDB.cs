@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SamenSterkerData
 {
-    class ContractFormulaDB
+    public class ContractFormulaDB
     {
         public static IEnumerable<ContractFormula> GetAll()
         {

@@ -7,42 +7,67 @@ using System.Threading.Tasks;
 
 namespace SamenSterkerData
 {
-    class ContractDB
+    public class ContractDB
     {
-        public static IEnumerable<Contract> GetAll()
+        public static List<Contract> GetAll()
         {
             using (SqlConnection connection = SamenSterkerDB.GetConnection())
             {
-                const string query = "SELECT * FROM Contract";
-                return connection.Query<Contract>(query);
+                const string query = @"SELECT ct.*, cmp.*, f.* 
+                                     FROM Contract ct
+                                     LEFT JOIN Company cmp ON ct.CompanyId = cmp.Id
+                                     LEFT JOIN ContractFormula f ON ct.ContractFormulaId = f.Id";
+                return connection.Query<Contract, Company, ContractFormula, Contract>(
+                    query,
+                    // set the company and the formula properties of the contract
+                    (ct, cmp, f) =>
+                        {
+                            ct.Company = cmp;
+                            ct.Formula = f;
+                            return ct;
+                        }
+                    )
+                    .ToList();
             }
         }
 
-        public static Company GetById(int contractId)
+        public static Contract GetById(int contractId)
         {
             using (SqlConnection connection = SamenSterkerDB.GetConnection())
             {
-                const string query = "SELECT * FROM Contract " +
-                                     "WHERE Id = @ContractId";
+                const string query = @"SELECT ct.*, cmp.*, f.* FROM Contract ct
+                                     LEFT JOIN Company cmp ON ct.CompanyId = cmp.Id
+                                     LEFT JOIN ConctactFormula f ON ct.ContractFormulaId = f.Id
+                                     WHERE Id = @ContractId";
 
-                return connection.Query<Company>(query,
-                       new { ContractId = contractId }).SingleOrDefault();
+                return connection.Query<Contract, Company, ContractFormula, Contract>(
+                    query,
+                    // set the company and the formula properties of the contract
+                    (ct, cmp, f) => 
+                        {
+                            ct.Company = cmp;
+                            ct.Formula = f;
+                            return ct;
+                        },
+                    new { ContractId = contractId }) 
+                    .SingleOrDefault();
             }
         }
 
-
+        // TODO 
+        // id of company and contractformula (Contract.CompanyId == Contract
         public static int save(Contract contract)
         {
             const string insertCommand =
-                  "INSERT INTO Contract " +
-                  "(Id, Number, StartDate, EndDate, CompanyId, ContractFormulaId) " +
-                  "VALUES (@Id, @Number, @StartDate, @EndDate, @CompanyId, @ContractFormulaId)";
+                  @"INSERT INTO Contract 
+                  (Id, Number, StartDate, EndDate, CompanyId, ContractFormulaId) 
+                  VALUES (@Id, @Number, @StartDate, @EndDate, @CompanyId, @ContractFormulaId)";
 
 
             const string updateCommand =
-                  "UPDATE Company " +
-                  "SET Id = @Id, Number = @Number, StartDate = @StartDate ," +
-                  "EndDate = @EndDate, CompanyId = @CompanyId, ContractFormulaId = @ContractFormulaId";
+                  @"UPDATE Company 
+                  SET Id = @Id, Number = @Number, StartDate = @StartDate ,
+                  EndDate = @EndDate, CompanyId = @CompanyId, ContractFormulaId = @ContractFormulaId";
 
             bool isNew = contract.Id == 0;
             string saveCommand = isNew ? insertCommand : updateCommand;
