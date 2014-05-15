@@ -133,9 +133,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="LogoNoName.ico" />
-    <Content Include="LogoZonderNaam.ico" />
-    <Content Include="Resources\Logo.png" />
-    <Content Include="Resources\LogoZonderNaam.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Resources\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
