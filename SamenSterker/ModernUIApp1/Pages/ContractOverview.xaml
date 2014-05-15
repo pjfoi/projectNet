@@ -10,7 +10,44 @@
         <ScrollViewer>
             <StackPanel MinWidth="200">
                 <TextBlock Text="Contracten Overzicht" Style="{StaticResource Heading2}" />
-                <DataGrid ItemsSource="{Binding Contracts, Mode=OneWay}" IsReadOnly="True" />
+
+                <DataGrid ItemsSource="{Binding Contracts}" AutoGenerateColumns="False" IsReadOnly="True" CanUserDeleteRows="True">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Nummer" Width="auto" Binding="{Binding Path=Number}" />
+                        
+                        <DataGridTemplateColumn Header="Start" Width="auto">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Path=StartDate, StringFormat=dd-MM-yyyy}" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
+                        <DataGridTemplateColumn Header="Einde" Width="auto">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Path=EndDate, StringFormat=dd-MM-yyyy}" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
+                        <DataGridTextColumn Header="Formule" Width="SizeToCells" Binding="{Binding Path=Formula.Description}" />
+                        <DataGridTextColumn Header="Bedrijf" Width="SizeToCells" Binding="{Binding Path=Company.Name}" />
+
+                        <DataGridTemplateColumn Header="" IsReadOnly="True">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <!-- Only show delete button when row is selected -->
+                                    <Button Content="Delete" Command="Delete" IsEnabled="True"
+                                            Visibility="{Binding IsSelected, Converter={StaticResource BooleanToVisibilityConverter},
+                                                    RelativeSource={RelativeSource FindAncestor, AncestorType=DataGridRow}}"
+                                    />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+                
             </StackPanel>
         </ScrollViewer>
     </Grid>

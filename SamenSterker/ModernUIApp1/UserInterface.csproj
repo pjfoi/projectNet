@@ -87,6 +87,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Pages\ContractEdit.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Pages\ContractOverview.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -99,6 +103,9 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Compile Include="Pages\ContractEdit.xaml.cs">
+      <DependentUpon>ContractEdit.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\ContractOverviewViewModel.cs" />
     <Compile Include="Pages\CompanyOverviewViewModel.cs" />
     <Compile Include="Pages\CompanyOverview.xaml.cs">
