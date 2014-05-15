@@ -9,6 +9,14 @@
         <ScrollViewer>
             <StackPanel MinWidth="200">
                 <TextBlock Text="Coworking Samen Sterker" />
+                <Grid>
+                    <Calendar
+	                    HorizontalAlignment="Left"
+	                    Margin="10,10,0,0"
+	                    VerticalAlignment="Top"
+	                    SelectedDatesChanged="Calendar_SelectedDatesChanged"/>
+                </Grid>
+                <TextBlock Name="dateBox" />
             </StackPanel>
         </ScrollViewer>
     </Grid>
