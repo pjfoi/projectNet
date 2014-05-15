@@ -46,6 +46,8 @@ build/
 *.log
 *.scc
 
+/SamenSterkerData/SamenSterkerDB.cs
+
 # Visual C++ cache files
 ipch/
 *.aps
