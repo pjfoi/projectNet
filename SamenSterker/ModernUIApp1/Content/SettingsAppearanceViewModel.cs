@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
 
-namespace ModernUIApp1.Content
+namespace UserInteface.Content
 {
     /// <summary>
     /// A simple view model for configuring theme, font and accent colors.

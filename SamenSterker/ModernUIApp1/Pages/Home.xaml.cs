@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace ModernUIApp1.Pages
+namespace UserInteface.Pages
 {
     /// <summary>
     /// Interaction logic for Home.xaml
@@ -23,21 +23,6 @@ namespace ModernUIApp1.Pages
         public Home()
         {
             InitializeComponent();
-        }
-
-        private void Calendar_SelectedDatesChanged(object sender,
-        SelectionChangedEventArgs e)
-        {
-            // ... Get reference.
-            var calendar = sender as Calendar;
-
-            // ... See if a date is selected.
-            if (calendar.SelectedDate.HasValue)
-            {
-                // ... Display SelectedDate in Title.
-                DateTime date = calendar.SelectedDate.Value;
-                this.dateBox.Text = date.ToShortDateString();
-            }
         }
     }
 }

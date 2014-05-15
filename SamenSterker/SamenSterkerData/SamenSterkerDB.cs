@@ -12,7 +12,8 @@ namespace SamenSterkerData
         public static SqlConnection GetConnection()
         {
             string connectionString =
-            "Data Source=(localDB)\\v11.0;AttachDbFilename=D:\\software\\Dropbox\\PHL\\2de jaar\\periode3\\geintproject\\Net\\AB1_SQLserver.mdf;Integrated Security=True";
+            //"Data Source=(localDB)\\v11.0;AttachDbFilename=D:\\software\\Dropbox\\Geïntegreerd project\\NET project\\DB\\AB1_SQLserver.mdf;Integrated Security=True";
+            "Data Source=(localDB)\\v11.0;AttachDbFilename=C:\\DB\\AB1_SQLserver.mdf;Integrated Security=True";
             SqlConnection connection = new SqlConnection(connectionString);
             return connection;
         }

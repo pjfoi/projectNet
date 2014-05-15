@@ -14,7 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace ModernUIApp1
+namespace UserInteface
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
