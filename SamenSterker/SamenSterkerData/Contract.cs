@@ -6,49 +6,63 @@ using System.Threading.Tasks;
 
 namespace SamenSterkerData
 {
-    class Contract
+    public class Contract
     {
         private int id;
+        private int number;
+        private DateTime startDate;
+        private DateTime endDate;
+        private int companyId;
+        private Company company;
+        private int contractFormulaId;
+        private ContractFormula formula;
 
         public int Id
         {
             get { return id; }
             set { id = value; }
         }
-        private int number;
 
         public int Number
         {
             get { return number; }
             set { number = value; }
         }
-        private DateTime startDate;
 
         public DateTime StartDate
         {
             get { return startDate; }
             set { startDate = value; }
         }
-        private DateTime endDate;
 
         public DateTime EndDate
         {
             get { return endDate; }
             set { endDate = value; }
         }
-        private int companyId;
 
         public int CompanyId
         {
             get { return companyId; }
             set { companyId = value; }
         }
-        private int contractFormulaId;
 
         public int ContractFormulaId
         {
             get { return contractFormulaId; }
             set { contractFormulaId = value; }
+        }
+
+        public Company Company
+        {
+            get { return company; }
+            set { company = value; }
+        }
+
+        public ContractFormula Formula
+        {
+            get { return formula; }
+            set { formula = value; }
         }
 
         public Contract()

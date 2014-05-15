@@ -24,6 +24,11 @@
                 <mui:Link DisplayName="overzicht" Source="/Pages/CompanyOverview.xaml" />
             </mui:LinkGroup.Links>
         </mui:LinkGroup>
+        <mui:LinkGroup DisplayName="contracten">
+            <mui:LinkGroup.Links>
+                <mui:Link DisplayName="overzicht" Source="/Pages/ContractOverview.xaml" />
+            </mui:LinkGroup.Links>
+        </mui:LinkGroup>
     </mui:ModernWindow.MenuLinkGroups>
     
     <mui:ModernWindow.TitleLinks>
