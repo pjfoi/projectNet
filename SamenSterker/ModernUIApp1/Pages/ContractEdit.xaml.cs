@@ -23,6 +23,9 @@ namespace UserInteface.Pages
         public ContractEdit()
         {
             InitializeComponent();
+
+            // create and assign the view model
+            this.DataContext = new ContractEditViewModel();
         }
     }
 }

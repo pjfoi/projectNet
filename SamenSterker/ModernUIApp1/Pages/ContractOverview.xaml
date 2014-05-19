@@ -4,6 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:behavior="clr-namespace:UserInteface.Lib"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid Style="{StaticResource ContentRoot}">
@@ -34,19 +36,27 @@
                         <DataGridTextColumn Header="Formule" Width="SizeToCells" Binding="{Binding Path=Formula.Description}" />
                         <DataGridTextColumn Header="Bedrijf" Width="SizeToCells" Binding="{Binding Path=Company.Name}" />
 
-                        <DataGridTemplateColumn Header="" IsReadOnly="True">
+                        <!--<DataGridTemplateColumn Header="" IsReadOnly="True">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <!-- Only show delete button when row is selected -->
+                                    Only show delete button when row is selected
                                     <Button Content="Delete" Command="Delete" IsEnabled="True"
                                             Visibility="{Binding IsSelected, Converter={StaticResource BooleanToVisibilityConverter},
                                                     RelativeSource={RelativeSource FindAncestor, AncestorType=DataGridRow}}"
                                     />
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
+                        </DataGridTemplateColumn>-->
                     </DataGrid.Columns>
+                    <i:Interaction.Behaviors>
+                        <behavior:BindableSelectedItems x:Name="ContractsSelection" 
+                                         SelectedItems="{Binding SelectedContracts, Mode=OneWayToSource}"/>
+                    </i:Interaction.Behaviors>
                 </DataGrid>
+                <Button Content="Delete" Height="23" 
+                    HorizontalAlignment="Left"
+                    Name="DeleteBtn" VerticalAlignment="Top" 
+                    Width="75" Command="{Binding Path=DeleteCommand}" />
                 
             </StackPanel>
         </ScrollViewer>

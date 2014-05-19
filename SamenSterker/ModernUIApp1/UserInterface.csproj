@@ -39,6 +39,10 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Microsoft SDKs\Expression\Blend\.NETFramework\v4.5\Libraries\System.Windows.Interactivity.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -64,6 +68,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Compile Include="Lib\BindableSelectedItems.cs" />
+    <Compile Include="Lib\DelegateCommand.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -106,6 +112,7 @@
     <Compile Include="Pages\ContractEdit.xaml.cs">
       <DependentUpon>ContractEdit.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\ContractEditViewModel.cs" />
     <Compile Include="Pages\ContractOverviewViewModel.cs" />
     <Compile Include="Pages\CompanyOverviewViewModel.cs" />
     <Compile Include="Pages\CompanyOverview.xaml.cs">
@@ -132,7 +139,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="LogoNoName.ico" />
+    <Resource Include="LogoNoName.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\" />
