@@ -25,6 +25,9 @@ namespace SamenSterkerData
                 case "M-HP":
                     connectionString = "Data Source=(localDB)\\v11.0;AttachDbFilename=C:\\DB\\AB1_SQLserver.mdf;Integrated Security=True";
                     break;
+                case "latitude":
+                    connectionString = "Data Source=(localDB)\\v11.0;AttachDbFilename=C:\\Bestanden\\AB1_SQLserver.mdf;Integrated Security=True";
+                    break;
             }
 
             SqlConnection connection = new SqlConnection(connectionString);
