@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SamenSterkerData
 {
-    class LocationDB
+    public class LocationDB
     {
         public static IEnumerable<Location> GetAll()
         {

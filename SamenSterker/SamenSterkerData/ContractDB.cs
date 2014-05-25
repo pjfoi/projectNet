@@ -9,25 +9,19 @@ namespace SamenSterkerData
 {
     public class ContractDB
     {
+        private static readonly string selectAllQuery =
+            @"SELECT ct.*, cmp.*, f.* 
+              FROM Contract ct
+              LEFT JOIN Company cmp ON ct.CompanyId = cmp.Id
+              LEFT JOIN ContractFormula f ON ct.ContractFormulaId = f.Id ";
+
         public static List<Contract> GetAll()
         {
             using (SqlConnection connection = SamenSterkerDB.GetConnection())
             {
-                const string query = @"SELECT ct.*, cmp.*, f.* 
-                                     FROM Contract ct
-                                     LEFT JOIN Company cmp ON ct.CompanyId = cmp.Id
-                                     LEFT JOIN ContractFormula f ON ct.ContractFormulaId = f.Id";
                 return connection.Query<Contract, Company, ContractFormula, Contract>(
-                    query,
-                    // set the company and the formula properties of the contract
-                    (ct, cmp, f) =>
-                        {
-                            ct.Company = cmp;
-                            ct.Formula = f;
-                            return ct;
-                        }
-                    )
-                    .ToList();
+                         selectAllQuery, Mapper
+                       ).ToList();
             }
         }
 
@@ -35,60 +29,69 @@ namespace SamenSterkerData
         {
             using (SqlConnection connection = SamenSterkerDB.GetConnection())
             {
-                const string query = @"SELECT ct.*, cmp.*, f.* FROM Contract ct
-                                     LEFT JOIN Company cmp ON ct.CompanyId = cmp.Id
-                                     LEFT JOIN ConctactFormula f ON ct.ContractFormulaId = f.Id
-                                     WHERE Id = @ContractId";
-
                 return connection.Query<Contract, Company, ContractFormula, Contract>(
-                    query,
-                    // set the company and the formula properties of the contract
-                    (ct, cmp, f) => 
-                        {
-                            ct.Company = cmp;
-                            ct.Formula = f;
-                            return ct;
-                        },
-                    new { ContractId = contractId }) 
-                    .SingleOrDefault();
+                         selectAllQuery + "WHERE Id = @ContractId",
+                         Mapper,
+                         new { ContractId = contractId }
+                       ).SingleOrDefault();
             }
         }
 
-        // TODO 
-        // id of company and contractformula (Contract.CompanyId == Contract
-        public static int save(Contract contract)
+        private static Contract Mapper(Contract ct, Company cmp, ContractFormula f)
         {
-            const string insertCommand =
-                  @"INSERT INTO Contract 
-                  (Id, Number, StartDate, EndDate, CompanyId, ContractFormulaId) 
-                  VALUES (@Id, @Number, @StartDate, @EndDate, @CompanyId, @ContractFormulaId)";
+            ct.Company = cmp;
+            ct.Formula = f;
+            return ct;
+        }
 
+        public static int Save(Contract contract)
+        {
+            if (contract.CompanyId == 0 && contract.Company != null)
+            {
+                contract.CompanyId = contract.Company.Id;
+            }
 
-            const string updateCommand =
-                  @"UPDATE Company 
-                  SET Id = @Id, Number = @Number, StartDate = @StartDate ,
-                  EndDate = @EndDate, CompanyId = @CompanyId, ContractFormulaId = @ContractFormulaId";
-
-            bool isNew = contract.Id == 0;
-            string saveCommand = isNew ? insertCommand : updateCommand;
+            if (contract.ContractFormulaId == 0 && contract.Formula != null)
+            {
+                contract.ContractFormulaId = contract.Formula.Id;
+            }
 
             using (SqlConnection connection = SamenSterkerDB.GetConnection())
             {
-                int rowsAffected = connection.Execute(saveCommand, contract);
+                int rowsAffected = connection.Execute(
+                    sql: GetSaveCommand(contract),
+                    param: contract
+                );
                 //SetIdentity<int>(connection, id => subCategory.Id = id);
                 return rowsAffected;
             }
         }
 
+        private static string GetSaveCommand(Contract contract)
+        {
+            const string insertCommand =
+                  @"INSERT INTO Contract 
+                      (Number, StartDate, EndDate, CompanyId, ContractFormulaId) 
+                    VALUES (@Number, @StartDate, @EndDate, @CompanyId, @ContractFormulaId)";
+
+            const string updateCommand =
+                  @"UPDATE Company 
+                    SET Number = @Number, StartDate = @StartDate, EndDate = @EndDate, 
+                        CompanyId = @CompanyId, ContractFormulaId = @ContractFormulaId
+                    WHERE Id = @Id,";
+
+            bool isNew = contract.Id == 0;
+            return isNew ? insertCommand : updateCommand;
+        }
+
         public static int Delete(Contract contract)
         {
-            const string deleteCommand =
-                  "DELETE FROM Contract WHERE Id = @ContractId";
-
             using (SqlConnection connection = SamenSterkerDB.GetConnection())
             {
-                return connection.Execute(deleteCommand,
-                    new { ContractId = contract.Id });
+                return connection.Execute(
+                    sql: "DELETE FROM Contract WHERE Id = @Id",
+                    param: contract
+                );
             }
         }
     }

@@ -9,12 +9,26 @@ namespace SamenSterkerData
 {
     public class ContractFormulaDB
     {
-        public static IEnumerable<ContractFormula> GetAll()
+        private static readonly string selectAllQuery =
+            "SELECT * FROM ContractFormula ";
+
+        private static readonly string insertCommand =
+                  @"INSERT INTO ContractFormula 
+                     (Description, MaxUsageHoursPerPeriod, PeriodInMonths, NoticePeriodInMonths, Price)
+                    VALUES (@Description, @MaxUsage, @Period, @NoticePeriod, @Price)";
+
+        private static readonly string updateCommand =
+                  @"UPDATE ContractFormula 
+                    SET Description = @Description, MaxUsageHoursPerPeriod = @MaxUsage, 
+                        PeriodInMonths = @Period, NoticePeriod = @NoticePeriod, Price = @Price
+                    WHERE Id = ";
+
+        public static IList<ContractFormula> GetAll()
         {
             using (SqlConnection connection = SamenSterkerDB.GetConnection())
             {
-                const string query = "SELECT * FROM ContractFormula";
-                return connection.Query<ContractFormula>(query);
+                return connection.Query<ContractFormula>(selectAllQuery)
+                                 .ToList<ContractFormula>();
             }
         }
 
@@ -22,48 +36,39 @@ namespace SamenSterkerData
         {
             using (SqlConnection connection = SamenSterkerDB.GetConnection())
             {
-                const string query = "SELECT * FROM ContractFormula " +
-                                     "WHERE Id = @ContractFormulaId";
-
-                return connection.Query<ContractFormula>(query,
-                       new { ContractFormulaId = contractFormulaId }).SingleOrDefault();
+                return connection.Query<ContractFormula>(
+                    selectAllQuery + "WHERE Id = @ContractFormulaId",
+                    new { ContractFormulaId = contractFormulaId }
+                ).SingleOrDefault();
             }
         }
 
-
-        public static int save(ContractFormula contractformula)
+        public static int Save(ContractFormula contractFormula)
         {
-            const string insertCommand =
-                  "INSERT INTO ContractFormula " +
-                  "(Id, Description, MaxUsageHoursPerPeriod, PeriodInMonths, NoticePeriodInMonths, Price) " +
-                  "VALUES (@Id, @Description, @MaxUsage, @Period, @NoticePeriod, @Price)";
-
-
-            const string updateCommand =
-                  "UPDATE ContractFormula " +
-                  "SET Id = @Id, Description = @Description, MaxUsageHoursPerPeriod = @MaxUsage, " +
-                  "PeriodInMonths = @Period, NoticePeriod = @NoticePeriod, Price = @Price";
-
-            bool isNew = contractformula.Id == 0;
-            string saveCommand = isNew ? insertCommand : updateCommand;
-
             using (SqlConnection connection = SamenSterkerDB.GetConnection())
             {
-                int rowsAffected = connection.Execute(saveCommand, contractformula);
+                int rowsAffected = connection.Execute(
+                    isNew(contractFormula) ? insertCommand : updateCommand,
+                    contractFormula
+                );
                 //SetIdentity<int>(connection, id => subCategory.Id = id);
                 return rowsAffected;
             }
         }
 
-        public static int Delete(ContractFormula contractformula)
+        private static bool isNew(ContractFormula contractFormula)
         {
-            const string deleteCommand =
-                  "DELETE FROM ContractFormula WHERE Id = @ContractFormulaId";
+            return contractFormula.Id == 0;
+        }
 
+        public static int Delete(ContractFormula contractFormula)
+        {
             using (SqlConnection connection = SamenSterkerDB.GetConnection())
             {
-                return connection.Execute(deleteCommand,
-                    new { ContractFormulaId = contractformula.Id });
+                return connection.Execute(
+                    "DELETE FROM ContractFormula WHERE Id = @Id",
+                    contractFormula
+                );
             }
         }
     }

@@ -15,49 +15,47 @@
 
                 <DataGrid ItemsSource="{Binding Contracts}" AutoGenerateColumns="False" IsReadOnly="True" CanUserDeleteRows="True">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="Nummer" Width="auto" Binding="{Binding Path=Number}" />
+                        <DataGridTextColumn Header="Bedrijf" Width="auto" Binding="{Binding Path=Company.Name}" />
+
+                        <DataGridTextColumn Header="Start" Width="auto" 
+                                            Binding="{Binding Path=StartDate, StringFormat=dd-MM-yyyy}" />
                         
-                        <DataGridTemplateColumn Header="Start" Width="auto">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding Path=StartDate, StringFormat=dd-MM-yyyy}" />
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
+                        <DataGridTextColumn Header="Einde" Width="auto"
+                                            Binding="{Binding Path=EndDate, StringFormat=dd-MM-yyyy}" />
 
-                        <DataGridTemplateColumn Header="Einde" Width="auto">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding Path=EndDate, StringFormat=dd-MM-yyyy}" />
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-
-                        <DataGridTextColumn Header="Formule" Width="SizeToCells" Binding="{Binding Path=Formula.Description}" />
-                        <DataGridTextColumn Header="Bedrijf" Width="SizeToCells" Binding="{Binding Path=Company.Name}" />
-
-                        <!--<DataGridTemplateColumn Header="" IsReadOnly="True">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    Only show delete button when row is selected
-                                    <Button Content="Delete" Command="Delete" IsEnabled="True"
-                                            Visibility="{Binding IsSelected, Converter={StaticResource BooleanToVisibilityConverter},
-                                                    RelativeSource={RelativeSource FindAncestor, AncestorType=DataGridRow}}"
-                                    />
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>-->
+                        <DataGridTextColumn Header="Formule" Width="auto" Binding="{Binding Path=Formula.Description}" />
                     </DataGrid.Columns>
+
                     <i:Interaction.Behaviors>
                         <behavior:BindableSelectedItems x:Name="ContractsSelection" 
                                          SelectedItems="{Binding SelectedContracts, Mode=OneWayToSource}"/>
                     </i:Interaction.Behaviors>
                 </DataGrid>
-                <Button Content="Delete" Height="23" 
-                    HorizontalAlignment="Left"
-                    Name="DeleteBtn" VerticalAlignment="Top" 
-                    Width="75" Command="{Binding Path=DeleteCommand}" />
                 
+                <!-- Buttons -->
+                <StackPanel Orientation="Horizontal" Margin="0,20,0,0">
+                    <Button Height="25" Width="100" HorizontalAlignment="Left"
+                        Name="DeleteBtn" VerticalAlignment="Top" Command="{Binding Path=DeleteCommand}">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="../Assets/appbar.delete.png" Height="18" Width="18" Margin="-5,0,0,0" />
+                            <TextBlock>Delete</TextBlock>
+                        </StackPanel>
+                    </Button>
+                    <Button Height="25" Width="100" HorizontalAlignment="Left" Margin="10,0,0,0"
+                        Name="EditBtn" VerticalAlignment="Top" Command="{Binding Path=EditCommand}">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="../Assets/appbar.edit.png" Height="18" Width="18" Margin="-10,0,0,0" />
+                            <TextBlock>Edit</TextBlock>
+                        </StackPanel>
+                    </Button>
+                    <Button Height="25" Width="100" HorizontalAlignment="Left" Margin="10,0,0,0"
+                        Name="StopBtn" VerticalAlignment="Top" Command="{Binding Path=StopCommand}">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="../Assets/appbar.noentry.png" Height="18" Width="18" Margin="-10,0,0,0" />
+                            <TextBlock>Stop</TextBlock>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
             </StackPanel>
         </ScrollViewer>
     </Grid>

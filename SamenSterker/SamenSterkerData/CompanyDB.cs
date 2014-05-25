@@ -9,13 +9,30 @@ namespace SamenSterkerData
 {
     public class CompanyDB
     {
-        //connection with Company Table
-        public static IEnumerable<Company> GetAll()
+        private static readonly string selectAllQuery = 
+            "SELECT * FROM Company";
+
+        private static readonly string insertCommand =
+            @"INSERT INTO Company 
+                (Name, Street, Zipcode, City, Country, Email, Phone, Employees) 
+              VALUES (@Name, @Street, @Zipcode, @City, @Country,
+                @Email, @Phone, @Employees)";
+
+        private static readonly string updateCommand =
+            @"UPDATE Company 
+              SET Name = @Name, Street = @Street, Zipcode = @Zipcode, City = @City,
+                  Country = @Country, Email = @Email, Phone = @Phone, Employees = @Employees
+              WHERE Id = @Id";
+
+        private static readonly string deleteQuery =
+            "DELETE FROM Company WHERE Id = @Id";
+
+        public static IList<Company> GetAll()
         {
             using (SqlConnection connection = SamenSterkerDB.GetConnection())
             {
-                const string query = "SELECT * FROM Company";
-                return connection.Query<Company>(query);
+                return connection.Query<Company>(selectAllQuery)
+                                 .ToList<Company>();
             }
         }
 
@@ -23,50 +40,63 @@ namespace SamenSterkerData
         {
             using (SqlConnection connection = SamenSterkerDB.GetConnection())
             {
-                const string query = "SELECT * FROM Company " +
-                                     "WHERE Id = @CompanyId";
-
-                return connection.Query<Company>(query, 
-                       new { CompanyId = companyId }).SingleOrDefault();
+                return connection.Query<Company>(
+                    selectAllQuery + " WHERE Id = @CompanyId",
+                    new { CompanyId = companyId }
+                ).SingleOrDefault();
             }
         }
 
-
-        public static int save(Company company)
+        public static int Save(Company company)
         {
-            const string insertCommand =
-                  "INSERT INTO Company " +
-                  "(Id, Name, Street, Zipcode, City, Country, Email, Phone) " +  
-                  "VALUES (@Id, @Name, @Street, @Zipcode, @City, @Country, " +
-                  "@Email, @Phone)";
-
-
-            const string updateCommand = 
-                  "UPDATE Company " +
-                  "SET Id = @Id, Name = @Name, Street = @Street, " +
-                  "Zipcode = @Zipcode, City = @City, Country = @Country, " +
-                  "Email = @Email, Phone = @Phone"; 
-
-            bool isNew = company.Id == 0;
-            string saveCommand =  isNew ? insertCommand : updateCommand;
-
             using (SqlConnection connection = SamenSterkerDB.GetConnection())
             {        
-                int rowsAffected = connection.Execute(saveCommand, company);
+                int rowsAffected = connection.Execute(
+                    isNew(company) ? insertCommand : updateCommand, 
+                    company
+                );
                 //SetIdentity<int>(connection, id => subCategory.Id = id);
                 return rowsAffected;
             }
         }
 
+        private static bool isNew(Company company)
+        {
+            return company.Id == 0;
+        }
+
         public static int Delete(Company company)
         {
-            const string deleteCommand = 
-                  "DELETE FROM Company WHERE Id = @CompanyId";
-
             using (SqlConnection connection = SamenSterkerDB.GetConnection())
             {                 
-                return connection.Execute(deleteCommand, 
-                    new { CompanyId = company.Id });
+                return connection.Execute(deleteQuery, company);
+            }
+        }
+
+        public static int Delete(IEnumerable<Company> companies)
+        {
+            using (SqlConnection connection = SamenSterkerDB.GetConnection())
+            {
+                connection.Open();
+                using (SqlTransaction transaction = connection.BeginTransaction())
+                {
+                    try
+                    {
+                        int rowsAffected = connection.Execute(
+                            sql: deleteQuery,
+                            param: companies,
+                            transaction: transaction
+                        );
+                        transaction.Commit();
+                        return rowsAffected;
+                    }
+                    catch (SqlException exception)
+                    {
+                        System.Diagnostics.Debug.WriteLine("Exception: " + exception,
+                                                           "CompanyDB Delete");
+                        return 0;
+                    }
+                }
             }
         }
     }

@@ -16,16 +16,17 @@ using System.Windows.Shapes;
 namespace UserInteface.Pages
 {
     /// <summary>
-    /// Interaction logic for CompanyOverview.xaml
+    /// Interaction logic for Login.xaml
     /// </summary>
-    public partial class CompanyOverview : UserControl
+    public partial class Login : UserControl
     {
-        public CompanyOverview()
+        public Login()
         {
             InitializeComponent();
 
             // create and assign the view model
-            this.DataContext = new CompanyOverviewViewModel2();
+            this.DataContext = new LoginViewModel();
         }
+
     }
 }

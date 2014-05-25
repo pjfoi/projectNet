@@ -3,13 +3,59 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:behavior="clr-namespace:UserInteface.Lib"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid Style="{StaticResource ContentRoot}">
         <ScrollViewer>
             <StackPanel MinWidth="200">
                 <TextBlock Text="Bedrijven Overzicht" Style="{StaticResource Heading2}" />
-                <DataGrid ItemsSource="{Binding Companies, Mode=OneWay}" IsReadOnly="True" />
+
+                <DataGrid ItemsSource="{Binding Items}" AutoGenerateColumns="False" 
+                          IsReadOnly="True" CanUserDeleteRows="True">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Naam" Width="auto" Binding="{Binding Path=Name}" />
+                        <DataGridTextColumn Header="Straat" Width="auto" Binding="{Binding Path=Street}" />
+                        <DataGridTextColumn Header="Postcode" Width="auto" Binding="{Binding Path=Zipcode}" />
+                        <DataGridTextColumn Header="Gemeente" Width="auto" Binding="{Binding Path=City}" />
+                        <DataGridTextColumn Header="Land" Width="auto" Binding="{Binding Path=Country}" />
+                        <DataGridTextColumn Header="Email" Width="auto" Binding="{Binding Path=Email}" />
+                        <DataGridTextColumn Header="Tel Nr" Width="auto" Binding="{Binding Path=Phone}" />
+                        <DataGridTextColumn Header="Personeelsleden" Width="auto" Binding="{Binding Path=Employees}" />
+                    </DataGrid.Columns>
+
+                    <i:Interaction.Behaviors>
+                        <behavior:BindableSelectedItems x:Name="CompaniesSelection" 
+                                         SelectedItems="{Binding SelectedItems, Mode=OneWayToSource}"/>
+                    </i:Interaction.Behaviors>
+                </DataGrid>
+
+                <!-- Buttons -->
+                <StackPanel Orientation="Horizontal" Margin="0,20,0,0">
+                    <Button Height="25" Width="100" HorizontalAlignment="Left"
+                        Name="DeleteBtn" VerticalAlignment="Top" Command="{Binding Path=DeleteCommand}">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="../Assets/appbar.delete.png" Height="18" Width="18" Margin="-5,0,0,0" />
+                            <TextBlock>Delete</TextBlock>
+                        </StackPanel>
+                    </Button>
+                    <Button Height="25" Width="100" HorizontalAlignment="Left" Margin="10,0,0,0"
+                        Name="EditBtn" VerticalAlignment="Top" Command="{Binding Path=EditCommand}">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="../Assets/appbar.edit.png" Height="18" Width="18" Margin="-10,0,0,0" />
+                            <TextBlock>Edit</TextBlock>
+                        </StackPanel>
+                    </Button>
+                    <Button Height="25" Width="150" HorizontalAlignment="Left" Margin="10,0,0,0"
+                        Name="AddContractBtn" VerticalAlignment="Top" Command="{Binding Path=AddContractCommand}">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="../Assets/appbar.page.add.png" Height="18" Width="18" Margin="-10,0,0,0" />
+                            <TextBlock>Maak Contract</TextBlock>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+                
             </StackPanel>
         </ScrollViewer>
     </Grid>

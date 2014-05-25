@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SamenSterkerData
 {
-    public class Company
+    public class Company : BaseModel
     {
         private int id;
         private string name;
@@ -58,7 +58,11 @@ namespace SamenSterkerData
         public string Email
         {
             get { return email; }
-            set { email = value; }
+            set
+            { 
+                email = value;
+                ValidateEmailAddress(email);
+            }
         }
         
         public string Phone
@@ -80,6 +84,25 @@ namespace SamenSterkerData
         public override String ToString() 
         {
             return String.Format("{0} ({1})", Name, Id);
+        }
+
+        public void ValidateEmailAddress(string email)
+        {
+            System.Diagnostics.Debug.WriteLine("Validate email " + email, "Company");
+
+            // source regex : http://stackoverflow.com/a/6893571
+            string regex = @"^[\w!#$%&'*+\-/=?\^_`{|}~]+(\.[\w!#$%&'*+\-/=?\^_`{|}~]+)*"
+                           + "@"
+                           + @"((([\-\w]+\.)+[a-zA-Z]{2,4})|(([0-9]{1,3}\.){3}[0-9]{1,3}))$";
+
+            ICollection<string> validationErrors = new List<string>();
+
+            if (! System.Text.RegularExpressions.Regex.IsMatch(email, regex))
+            {
+                validationErrors.Add("Gelieve een geldig emailadres in te vullen.");
+            }
+
+            UpdateValidationErrors("Email", validationErrors);
         }
     }
 }
