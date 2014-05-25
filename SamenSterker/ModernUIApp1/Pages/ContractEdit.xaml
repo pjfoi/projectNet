@@ -1,0 +1,65 @@
+﻿<UserControl x:Class="UserInteface.Pages.ContractEdit"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Grid Style="{StaticResource ContentRoot}">
+        <ScrollViewer>
+            <StackPanel MinWidth="200">
+                <TextBlock Text="Toevoegen / Bewerken" Style="{StaticResource Heading2}" />
+
+                <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" MaxWidth="100" />
+                        <ColumnDefinition Width="2*" MaxWidth="300" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Nummer" Margin="0,5" />
+                    <TextBox Grid.Row="0" Grid.Column="1" Margin="0,5" Text="{Binding Path=Contract.Number}"/>
+
+                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Start Datum" Margin="0,5" />
+                    <DatePicker Grid.Row="1" Grid.Column="1" Margin="0,5" SelectedDate="{Binding Path=Contract.StartDate}" />
+
+                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Eind Datum" Margin="0,5" />
+                    <DatePicker Grid.Row="2" Grid.Column="1" Margin="0,5" SelectedDate="{Binding Path=Contract.EndDate}" />
+
+                    <TextBlock Grid.Row="3" Grid.Column="0" Text="Formule" Margin="0,5" />
+                    <ComboBox Grid.Row="3" Grid.Column="1" Margin="0,5"
+                              ItemsSource="{Binding Formulas}"
+                              SelectedValuePath="Id"
+                              DisplayMemberPath="Description"
+                              SelectedValue="{Binding Path=Contract.ContractFormulaId}"
+                    />
+
+                    <TextBlock Grid.Row="4" Grid.Column="0" Text="Bedrijf" Margin="0,5" />
+                    <ComboBox Grid.Row="4" Grid.Column="1" Margin="0,5"
+                              ItemsSource="{Binding Companies}"
+                              SelectedValuePath="Id"
+                              DisplayMemberPath="Name"
+                              SelectedValue="{Binding Path=Contract.CompanyId}"
+                    />
+                    <!--SelectedValue="{Binding Path=Name}"-->
+
+                </Grid>
+                <Button Height="25" Width="75" HorizontalAlignment="Left"
+                        Name="SaveBtn" VerticalAlignment="Top" Command="{Binding Path=SaveCommand}">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="../Assets/appbar.save.png" Height="18" Width="18" Margin="-10,0,0,0" />
+                        <TextBlock>Save</TextBlock>
+                    </StackPanel>
+                </Button>
+
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>
