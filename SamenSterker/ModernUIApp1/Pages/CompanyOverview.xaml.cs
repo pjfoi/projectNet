@@ -25,7 +25,7 @@ namespace UserInteface.Pages
             InitializeComponent();
 
             // create and assign the view model
-            this.DataContext = new CompanyOverviewViewModel2();
+            //this.DataContext = new CompanyOverviewViewModel();
         }
     }
 }

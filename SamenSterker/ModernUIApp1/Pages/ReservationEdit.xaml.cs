@@ -26,11 +26,11 @@ namespace UserInteface.Pages
             InitializeComponent();
             
             // create and assign the view model
-            this.viewmodel = new ReservationEditViewModel();
-            this.DataContext = viewmodel;
+            //this.viewmodel = new ReservationEditViewModel();
+            //this.DataContext = viewmodel;
         }
 
-        private ReservationEditViewModel viewmodel;
+        //private ReservationEditViewModel viewmodel;
 
         public void OnFragmentNavigation(FirstFloor.ModernUI.Windows.Navigation.FragmentNavigationEventArgs e) { }
 
@@ -49,7 +49,7 @@ namespace UserInteface.Pages
                 Reservation reservation = Newtonsoft.Json.JsonConvert.DeserializeObject<Reservation>(jsonParam);
 
                 // show the passed reservation for editting
-                viewmodel.ShowReservation(reservation);
+                ((ReservationEditViewModel) this.DataContext).ShowReservation(reservation);
             }
         }
 

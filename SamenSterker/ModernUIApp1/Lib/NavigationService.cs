@@ -25,8 +25,8 @@ namespace UserInteface.Lib
                 { typeof(CompanyEditViewModel), "/Pages/CompanyEdit.xaml" },
                 { typeof(ContractOverviewViewModel), "/Pages/ContractOverview.xaml" },
                 { typeof(ContractEditViewModel), "/Pages/ContractEdit.xaml" },
+                { typeof(ReservationCalendarViewModel), "/Pages/ReservationCalendar.xaml" },
                 { typeof(ReservationOverviewViewModel), "/Pages/ReservationOverview.xaml" },
-                { typeof(ReservationListViewModel), "/Pages/ReservationList.xaml" },
                 { typeof(ReservationEditViewModel), "/Pages/ReservationEdit.xaml" },
                 { typeof(LoginViewModel), "/Pages/Login.xaml" }
             };

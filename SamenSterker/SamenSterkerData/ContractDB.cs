@@ -15,6 +15,20 @@ namespace SamenSterkerData
               LEFT JOIN Company cmp ON ct.CompanyId = cmp.Id
               LEFT JOIN ContractFormula f ON ct.ContractFormulaId = f.Id ";
 
+        private static readonly string insertCommand =
+            @"INSERT INTO Contract 
+                (Number, StartDate, EndDate, CompanyId, ContractFormulaId) 
+            VALUES (@Number, @StartDate, @EndDate, @CompanyId, @ContractFormulaId)";
+
+        private static readonly string updateCommand =
+            @"UPDATE Company 
+            SET Number = @Number, StartDate = @StartDate, EndDate = @EndDate, 
+                CompanyId = @CompanyId, ContractFormulaId = @ContractFormulaId
+            WHERE Id = @Id,";
+
+        private static readonly string deleteQuery =
+            "DELETE FROM Contract WHERE Id = @Id";
+
         public static List<Contract> GetAll()
         {
             using (SqlConnection connection = SamenSterkerDB.GetConnection())
@@ -59,7 +73,7 @@ namespace SamenSterkerData
             using (SqlConnection connection = SamenSterkerDB.GetConnection())
             {
                 int rowsAffected = connection.Execute(
-                    sql: GetSaveCommand(contract),
+                    sql: isNew(contract) ? insertCommand : updateCommand,
                     param: contract
                 );
                 //SetIdentity<int>(connection, id => subCategory.Id = id);
@@ -67,32 +81,45 @@ namespace SamenSterkerData
             }
         }
 
-        private static string GetSaveCommand(Contract contract)
+        private static bool isNew(Contract contract)
         {
-            const string insertCommand =
-                  @"INSERT INTO Contract 
-                      (Number, StartDate, EndDate, CompanyId, ContractFormulaId) 
-                    VALUES (@Number, @StartDate, @EndDate, @CompanyId, @ContractFormulaId)";
-
-            const string updateCommand =
-                  @"UPDATE Company 
-                    SET Number = @Number, StartDate = @StartDate, EndDate = @EndDate, 
-                        CompanyId = @CompanyId, ContractFormulaId = @ContractFormulaId
-                    WHERE Id = @Id,";
-
-            bool isNew = contract.Id == 0;
-            return isNew ? insertCommand : updateCommand;
+            return contract.Id == 0;
         }
 
         public static int Delete(Contract contract)
         {
             using (SqlConnection connection = SamenSterkerDB.GetConnection())
             {
-                return connection.Execute(
-                    sql: "DELETE FROM Contract WHERE Id = @Id",
-                    param: contract
-                );
+                return connection.Execute(sql: deleteQuery, param: contract);
             }
         }
+
+        public static int Delete(IEnumerable<Contract> contracts)
+        {
+            using (SqlConnection connection = SamenSterkerDB.GetConnection())
+            {
+                connection.Open();
+                using (SqlTransaction transaction = connection.BeginTransaction())
+                {
+                    try
+                    {
+                        int rowsAffected = connection.Execute(
+                            sql: deleteQuery,
+                            param: contracts,
+                            transaction: transaction
+                        );
+                        transaction.Commit();
+                        return rowsAffected;
+                    }
+                    catch (SqlException exception)
+                    {
+                        System.Diagnostics.Debug.WriteLine("Exception: " + exception,
+                                                           "ContractDB Delete");
+                        return 0;
+                    }
+                }
+            }
+        }
+
     }
 }

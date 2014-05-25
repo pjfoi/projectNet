@@ -7,7 +7,7 @@ using UserInteface.Lib;
 
 namespace UserInteface.Pages
 {
-    class BaseOverviewViewModel<T> : BaseViewModel
+    public abstract class BaseOverviewViewModel<T> : BaseViewModel
     {
         #region Properties
         private ObservableCollection<T> items;

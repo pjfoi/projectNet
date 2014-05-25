@@ -96,10 +96,14 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Lib\Auth.cs" />
+    <Compile Include="Pages\ReservationCalendar.xaml.cs">
+      <DependentUpon>ReservationCalendar.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\ReservationCalendarViewModel.cs" />
+    <Compile Include="Pages\ViewModelLocator.cs" />
     <Compile Include="Pages\BaseOverviewViewModel.cs" />
     <Compile Include="Pages\BaseViewModel.cs" />
-    <Compile Include="Pages\CompanyOverviewViewModel2.cs" />
-    <Compile Include="Pages\ReservationListViewModel2.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
@@ -156,11 +160,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Pages\ReservationEdit.xaml">
+    <Page Include="Pages\ReservationCalendar.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Pages\ReservationList.xaml">
+    <Page Include="Pages\ReservationEdit.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -199,10 +203,6 @@
       <DependentUpon>ReservationEdit.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\ReservationEditViewModel.cs" />
-    <Compile Include="Pages\ReservationList.xaml.cs">
-      <DependentUpon>ReservationList.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\ReservationListViewModel.cs" />
     <Compile Include="Pages\ReservationOverview.xaml.cs">
       <DependentUpon>ReservationOverview.xaml</DependentUpon>
     </Compile>

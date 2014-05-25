@@ -11,23 +11,23 @@
             <StackPanel MinWidth="200">
                 <TextBlock Text="Login" Style="{StaticResource Heading2}" />
                 
-                <Grid>
+                <Grid HorizontalAlignment="Stretch" MaxWidth="500">
                     <Grid.RowDefinitions>
                         <RowDefinition />
                         <RowDefinition />
                         <RowDefinition />
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition />
+                        <ColumnDefinition MaxWidth="175" />
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
-                    
-                    <TextBlock Text="Gebruikersnaam" Grid.Row="0" Grid.Column="0" />
-                    <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Username}" />
-                    <TextBlock Text="Wachtwoord" Grid.Row="1" Grid.Column="0" />
-                    <PasswordBox Name="Password" Grid.Row="1" Grid.Column="1" />
 
-                    <Button Grid.Row="2" Grid.Column="1" Name="LoginBtn" 
+                    <TextBlock Text="Gebruikersnaam" Grid.Row="0" Grid.Column="0" Margin="0,5"/>
+                    <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Username}" Margin="0,5" />
+                    <TextBlock Text="Wachtwoord" Grid.Row="1" Grid.Column="0" Margin="0,5" />
+                    <PasswordBox Name="Password" Grid.Row="1" Grid.Column="1" Margin="0,5" />
+
+                    <Button Grid.Row="2" Grid.Column="1" Name="LoginBtn" Margin="0,10,0,0"
                             Command="{Binding Path=LoginCommand}" CommandParameter="{Binding ElementName=Password}">
                         <StackPanel Orientation="Horizontal">
                             <Image Source="../Assets/appbar.lock.png" Height="18" Width="18" Margin="-10,0,0,0" />

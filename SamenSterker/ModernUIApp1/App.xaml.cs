@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Configuration;
 using System.Data;
 using System.Linq;
@@ -13,6 +14,20 @@ namespace UserInteface
     /// </summary>
     public partial class App : Application
     {
+
+        public App()
+        {
+            UserInteface.Lib.Auth.Initialize();
+
+            Auth = new UserInteface.Lib.Auth();
+            System.Diagnostics.Debug.WriteLine("Created Auth", "App");
+        }
+
+        public UserInteface.Lib.Auth Auth
+        {
+            get;
+            internal set;
+        }
 
     }
 }

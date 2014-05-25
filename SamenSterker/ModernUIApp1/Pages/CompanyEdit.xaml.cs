@@ -28,11 +28,11 @@ namespace UserInteface.Pages
             InitializeComponent();
 
             // create and assign the view model
-            this.viewmodel = new CompanyEditViewModel();
-            this.DataContext = viewmodel;
+            //this.viewmodel = new CompanyEditViewModel();
+            //this.DataContext = viewmodel;
         }
 
-        private CompanyEditViewModel viewmodel;
+        //private CompanyEditViewModel viewmodel;
 
         public void OnFragmentNavigation(FirstFloor.ModernUI.Windows.Navigation.FragmentNavigationEventArgs e) { }
 
@@ -49,8 +49,9 @@ namespace UserInteface.Pages
             {
                 Company company = JsonConvert.DeserializeObject<Company>(jsonParam);
 
+
                 // show the passed contract for editting
-                viewmodel.ShowCompany(company);
+                ((CompanyEditViewModel) this.DataContext).ShowCompany(company); //viewmodel.ShowCompany(company);
             }
         }
 

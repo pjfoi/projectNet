@@ -25,7 +25,7 @@ namespace UserInteface.Pages
             InitializeComponent();
 
             // create and assign the view model
-            this.DataContext = new ReservationOverviewViewModel();
+            //this.DataContext = new ReservationOverviewViewModel();
         }
     }
 }

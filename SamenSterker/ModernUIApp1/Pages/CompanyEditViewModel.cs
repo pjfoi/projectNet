@@ -18,11 +18,6 @@ namespace UserInteface.Pages
             set { company = value; }
         }
 
-        public void ShowCompany(Company company)
-        {
-            Company = company;
-        }
-
         public DelegateCommand SaveCommand
         {
             get;
@@ -34,6 +29,8 @@ namespace UserInteface.Pages
         {
             Company = new Company();
             CreateCommands();
+
+            System.Diagnostics.Debug.WriteLine("create companyeditviewmodel");
         }
 
         private void CreateCommands()
@@ -53,5 +50,12 @@ namespace UserInteface.Pages
                 //canExecute: (obj) => { return AreMultipleContractsSelected(); }
             );
         }
+
+        public void ShowCompany(Company company)
+        {
+            Company = company;
+            System.Diagnostics.Debug.WriteLine("Show Company");
+        }
+
     }
 }

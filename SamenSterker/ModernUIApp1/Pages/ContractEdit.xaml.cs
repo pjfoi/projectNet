@@ -28,11 +28,11 @@ namespace UserInteface.Pages
             InitializeComponent();
 
             // create and assign the view model
-            this.viewmodel = new ContractEditViewModel();
-            this.DataContext = viewmodel;
+            //this.viewmodel = new ContractEditViewModel();
+            //this.DataContext = viewmodel;
         }
 
-        private ContractEditViewModel viewmodel;
+        //private ContractEditViewModel viewmodel;
 
         public void OnFragmentNavigation(FirstFloor.ModernUI.Windows.Navigation.FragmentNavigationEventArgs e) { }
 
@@ -50,7 +50,7 @@ namespace UserInteface.Pages
                 Contract contract = JsonConvert.DeserializeObject<Contract>(jsonParam);
 
                 // show the passed contract for editting
-                viewmodel.ShowContract(contract);
+                ((ContractEditViewModel)this.DataContext).ShowContract(contract);
             }
         }
 

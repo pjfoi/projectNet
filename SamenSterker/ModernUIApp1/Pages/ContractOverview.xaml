@@ -8,12 +8,15 @@
              xmlns:behavior="clr-namespace:UserInteface.Lib"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.DataContext>
+        <Binding Source="{StaticResource VMLocator}" Path="ContractOverviewViewModel" />
+    </UserControl.DataContext>
     <Grid Style="{StaticResource ContentRoot}">
         <ScrollViewer>
             <StackPanel MinWidth="200">
                 <TextBlock Text="Contracten Overzicht" Style="{StaticResource Heading2}" />
 
-                <DataGrid ItemsSource="{Binding Contracts}" AutoGenerateColumns="False" IsReadOnly="True" CanUserDeleteRows="True">
+                <DataGrid ItemsSource="{Binding Items}" AutoGenerateColumns="False" IsReadOnly="True" CanUserDeleteRows="True">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Bedrijf" Width="auto" Binding="{Binding Path=Company.Name}" />
 
@@ -28,31 +31,35 @@
 
                     <i:Interaction.Behaviors>
                         <behavior:BindableSelectedItems x:Name="ContractsSelection" 
-                                         SelectedItems="{Binding SelectedContracts, Mode=OneWayToSource}"/>
+                                         SelectedItems="{Binding SelectedItems, Mode=OneWayToSource}"/>
                     </i:Interaction.Behaviors>
                 </DataGrid>
                 
                 <!-- Buttons -->
                 <StackPanel Orientation="Horizontal" Margin="0,20,0,0">
-                    <Button Height="25" Width="100" HorizontalAlignment="Left"
-                        Name="DeleteBtn" VerticalAlignment="Top" Command="{Binding Path=DeleteCommand}">
+                    <Button Height="25" Width="100" HorizontalAlignment="Left" 
+                            Name="StopBtn" VerticalAlignment="Top" Command="{Binding Path=StopCommand}">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="../Assets/appbar.noentry.png" Height="18" Width="18" Margin="-10,0,0,0" />
+                            <TextBlock>Stop</TextBlock>
+                        </StackPanel>
+                    </Button>
+                    <Button Height="25" Width="100" HorizontalAlignment="Left" Margin="10,0,0,0"
+                            Name="DeleteBtn" VerticalAlignment="Top" Command="{Binding Path=DeleteCommand}"
+                            Visibility="{Binding Path=Auth.IsAdmin, Source={x:Static Application.Current},
+                                        Converter={StaticResource BoolToVis}, FallbackValue=Hidden}">
                         <StackPanel Orientation="Horizontal">
                             <Image Source="../Assets/appbar.delete.png" Height="18" Width="18" Margin="-5,0,0,0" />
                             <TextBlock>Delete</TextBlock>
                         </StackPanel>
                     </Button>
                     <Button Height="25" Width="100" HorizontalAlignment="Left" Margin="10,0,0,0"
-                        Name="EditBtn" VerticalAlignment="Top" Command="{Binding Path=EditCommand}">
+                            Name="EditBtn" VerticalAlignment="Top" Command="{Binding Path=EditCommand}"
+                            Visibility="{Binding Path=Auth.IsAdmin, Source={x:Static Application.Current},
+                                        Converter={StaticResource BoolToVis}, FallbackValue=Hidden}">
                         <StackPanel Orientation="Horizontal">
                             <Image Source="../Assets/appbar.edit.png" Height="18" Width="18" Margin="-10,0,0,0" />
                             <TextBlock>Edit</TextBlock>
-                        </StackPanel>
-                    </Button>
-                    <Button Height="25" Width="100" HorizontalAlignment="Left" Margin="10,0,0,0"
-                        Name="StopBtn" VerticalAlignment="Top" Command="{Binding Path=StopCommand}">
-                        <StackPanel Orientation="Horizontal">
-                            <Image Source="../Assets/appbar.noentry.png" Height="18" Width="18" Margin="-10,0,0,0" />
-                            <TextBlock>Stop</TextBlock>
                         </StackPanel>
                     </Button>
                 </StackPanel>

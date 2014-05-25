@@ -7,7 +7,7 @@ using UserInteface.Lib;
 
 namespace UserInteface.Pages
 {
-    class ReservationEditViewModel : INotifyPropertyChanged
+    public class ReservationEditViewModel : INotifyPropertyChanged
     {
 
         #region Properties
@@ -58,7 +58,7 @@ namespace UserInteface.Pages
                     );
 
                     INavigationService navigator = new NavigationService();
-                    navigator.Navigate<ReservationListViewModel>();
+                    navigator.Navigate<ReservationOverviewViewModel>();
 
                     Reservation = CreateDefaultReservation();
                 }//,

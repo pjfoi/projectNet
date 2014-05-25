@@ -11,33 +11,16 @@ namespace UserInteface.Pages
 {
     class LoginViewModel
     {
-
-        public LoginViewModel()
-        {
-            CreateCommands();
-
-            WebMatrix.WebData.WebSecurity.InitializeDatabaseConnection(
-                connectionStringName: "LocalSqlServer",
-                userTableName: "Users",
-                userIdColumn: "Id",
-                userNameColumn: "Username",
-                autoCreateTables: true
-            );
-
-            //Roles.CreateRole("admin");
-
-            if (! WebSecurity.UserExists("testuser"))
-            {
-                WebSecurity.CreateUserAndAccount("testuser", "Pass!");
-            }
-
-        }
-
+        #region Properties
         private string username;
         public string Username
         {
             get { return username; }
-            set { username = value; }
+            set 
+            { 
+                username = value;
+                LoginCommand.RaiseCanExecuteChanged();
+            }
         }
 
         public DelegateCommand LoginCommand
@@ -45,54 +28,59 @@ namespace UserInteface.Pages
             get;
             internal set;
         }
+        #endregion Properties
+
+        public LoginViewModel()
+        {
+            CreateCommands();
+
+            //Roles.CreateRole("admin");
+
+            //if (! WebSecurity.UserExists("testuser"))
+            //{
+            //    WebSecurity.CreateUserAndAccount("testuser", "Pass!");
+            //}
+        }
 
         private void CreateCommands()
         {
-            // delete the selected contracts
             LoginCommand = new DelegateCommand(execute: (parameter) =>
                 {
                     string password = (parameter as System.Windows.Controls.PasswordBox).Password;
-                    //if (Username.Equals("Test") && password.Equals("Test"))
-                    if (Membership.ValidateUser(Username, password))
-                    {
-                        System.Windows.MessageBox.Show("Yiehaa", "Login");
+                    Auth auth = ((App)App.Current).Auth;
+
+                    if (auth.Login(Username, password))
+                    {  
+                        Xceed.Wpf.Toolkit.MessageBox.Show(
+                            String.Format("Welkom {0}!", auth.Username),
+                            "Succes", System.Windows.MessageBoxButton.OK
+                        );
+
+                        System.Diagnostics.Debug.WriteLine(
+                            String.Format("{0} is admin : {1} is client {2}",
+                                          auth.Username,
+                                          Roles.IsUserInRole(auth.Username, "admin"),
+                                          Roles.IsUserInRole(auth.Username, "client")
+                            ),
+                            "App"
+                        );
+
                     }
                     else
                     {
-                        System.Windows.MessageBox.Show("Boehoe wrong! ", "No login");
+                        Xceed.Wpf.Toolkit.MessageBox.Show(
+                            "Uw gebruikersnaam of wachtwoord is incorrect!",
+                            "Mislukt", System.Windows.MessageBoxButton.OK
+                        );
                     }
                     Username = "";
-                }/*,
+                },
                 canExecute: (obj) =>
                 {
-                    return SelectedContracts != null && SelectedContracts.Count > 0;
-                }*/
+                    return ! String.IsNullOrWhiteSpace(Username);
+                }
             );
         }
-
-
-        /*if (Membership.FindUsersByName("testuser") == null)
-        {
-            Membership.CreateUser("testuser", "Pass!", "test@test.com", "Hood", "Pine Hills", true, out result);
-            Console.WriteLine(result.ToString());
-        }
-        else
-          Console.WriteLine("User " + "'testuser' bestaat in de DB!");
-
-        if ( !Roles.RoleExists("Developer"))
-            Roles.CreateRole("Developer");
-        if (!Roles.IsUserInRole("testuser", "developer"))
-          Roles.AddUserToRole("testuser", "Developer");
-
-        if (Roles.IsUserInRole("testuser", "developer"))
-            Console.WriteLine("Is a developer");
-        else
-            Console.WriteLine("Doesn't write code.");
-
-        if (Membership.ValidateUser("testuser", "Pass!"))
-            Console.WriteLine("User Validated.");
-        else
-            Console.WriteLine("User Invalid");*/
 
     }
 }

@@ -10,46 +10,30 @@ using UserInteface.Lib;
 
 namespace UserInteface.Pages
 {
-    class CompanyOverviewViewModel
+    public class CompanyOverviewViewModel  : BaseOverviewViewModel<Company>
     {
-
-        public CompanyOverviewViewModel()
-        {
-            this.companies = new ObservableCollection<Company>(CompanyDB.GetAll());
-            CreateCommands();
-        }
-
-        private ObservableCollection<Company> companies;
-
-        public ObservableCollection<Company> Companies
-        {
-            get { return companies; }
-        }
-
-        private IList<Object> _selectedCompanies;
-        public IList<Object> SelectedCompanies
-        {
-            get { return _selectedCompanies; }
-            set
-            {
-                _selectedCompanies = value;
-                // recheck if selected companies can be edited / deleted
-                EditCommand.RaiseCanExecuteChanged();
-                DeleteCommand.RaiseCanExecuteChanged();
-                AddContractCommand.RaiseCanExecuteChanged();
+        public CompanyOverviewViewModel() : base(
+            name: "reservatie",
+            items: CompanyDB.GetAll(),
+            deleteItems: (companies) => CompanyDB.Delete(companies),
+            editItem: (company) => {
+                GetNavigator().Navigate<CompanyEditViewModel>(company);
             }
-        }
+        ) {
 
-        public DelegateCommand DeleteCommand
-        {
-            get;
-            internal set;
-        }
+            AddContractCommand = new DelegateCommand(execute: (obj) =>
+            {
+                Contract contract = new Contract();
+                contract.Company = (Company)SelectedItems[0];
+                contract.CompanyId = contract.Company.Id;
 
-        public DelegateCommand EditCommand
-        {
-            get;
-            internal set;
+                INavigationService navigator = new NavigationService();
+                navigator.Navigate<ContractEditViewModel>(contract);
+            },
+                canExecute: (obj) => { return IsOneItemSelected(); }
+            );
+
+            Commands.Add(AddContractCommand);
         }
 
         public DelegateCommand AddContractCommand
@@ -57,58 +41,104 @@ namespace UserInteface.Pages
             get;
             internal set;
         }
+    
 
-        private void CreateCommands()
-        {
-            // delete the selected companies
-            DeleteCommand = new DelegateCommand(execute: (obj) =>
-            {
-                // cast selecteditems to Companies
-                // reverse list to make deleting possible
-                foreach (Company company in SelectedCompanies.Cast<Company>().Reverse())
-                {
-                    Companies.Remove(company);
+        //public CompanyOverviewViewModel()
+        //{
+        //    this.companies = new ObservableCollection<Company>(CompanyDB.GetAll());
+        //    CreateCommands();
+        //}
 
-                    // TODO : DB deleting
-                }
-            },
-                canExecute: (obj) => { return AreMultipleCompaniesSelected(); }
-            );
+        //private ObservableCollection<Company> companies;
 
-            // navigate to the company edit form to edit the selected company
-            EditCommand = new DelegateCommand(execute: (obj) =>
-            {
-                Company company = (Company)SelectedCompanies[0];
+        //public ObservableCollection<Company> Companies
+        //{
+        //    get { return companies; }
+        //}
 
-                INavigationService navigator = new NavigationService();
-                navigator.Navigate<CompanyEditViewModel>(company);
-            },
-                canExecute: (obj) => { return IsOneCompanySelected(); }
-            );
+        //private IList<Object> _selectedCompanies;
+        //public IList<Object> SelectedCompanies
+        //{
+        //    get { return _selectedCompanies; }
+        //    set
+        //    {
+        //        _selectedCompanies = value;
+        //        // recheck if selected companies can be edited / deleted
+        //        EditCommand.RaiseCanExecuteChanged();
+        //        DeleteCommand.RaiseCanExecuteChanged();
+        //        AddContractCommand.RaiseCanExecuteChanged();
+        //    }
+        //}
 
-            // navigate to the contract edit form to edit the selected contract
-            AddContractCommand = new DelegateCommand(execute: (obj) =>
-            {
-                Contract contract = new Contract();
-                contract.Company = (Company)SelectedCompanies[0];
-                contract.CompanyId = contract.Company.Id;
+        //public DelegateCommand DeleteCommand
+        //{
+        //    get;
+        //    internal set;
+        //}
 
-                INavigationService navigator = new NavigationService();
-                navigator.Navigate<ContractEditViewModel>(contract);
-            },
-                canExecute: (obj) => { return IsOneCompanySelected(); }
-            );
-        }
+        //public DelegateCommand EditCommand
+        //{
+        //    get;
+        //    internal set;
+        //}
 
-        private bool IsOneCompanySelected()
-        {
-            return SelectedCompanies != null && SelectedCompanies.Count == 1;
-        }
+        //public DelegateCommand AddContractCommand
+        //{
+        //    get;
+        //    internal set;
+        //}
 
-        private bool AreMultipleCompaniesSelected()
-        {
-            return SelectedCompanies != null && SelectedCompanies.Count > 0;
-        }
+        //private void CreateCommands()
+        //{
+        //    // delete the selected companies
+        //    DeleteCommand = new DelegateCommand(execute: (obj) =>
+        //    {
+        //        // cast selecteditems to Companies
+        //        // reverse list to make deleting possible
+        //        foreach (Company company in SelectedCompanies.Cast<Company>().Reverse())
+        //        {
+        //            Companies.Remove(company);
+
+        //            // TODO : DB deleting
+        //        }
+        //    },
+        //        canExecute: (obj) => { return AreMultipleCompaniesSelected(); }
+        //    );
+
+        //    // navigate to the company edit form to edit the selected company
+        //    EditCommand = new DelegateCommand(execute: (obj) =>
+        //    {
+        //        Company company = (Company)SelectedCompanies[0];
+
+        //        INavigationService navigator = new NavigationService();
+        //        navigator.Navigate<CompanyEditViewModel>(company);
+        //    },
+        //        canExecute: (obj) => { return IsOneCompanySelected(); }
+        //    );
+
+        //    // navigate to the contract edit form to edit the selected contract
+        //    AddContractCommand = new DelegateCommand(execute: (obj) =>
+        //    {
+        //        Contract contract = new Contract();
+        //        contract.Company = (Company)SelectedCompanies[0];
+        //        contract.CompanyId = contract.Company.Id;
+
+        //        INavigationService navigator = new NavigationService();
+        //        navigator.Navigate<ContractEditViewModel>(contract);
+        //    },
+        //        canExecute: (obj) => { return IsOneCompanySelected(); }
+        //    );
+        //}
+
+        //private bool IsOneCompanySelected()
+        //{
+        //    return SelectedCompanies != null && SelectedCompanies.Count == 1;
+        //}
+
+        //private bool AreMultipleCompaniesSelected()
+        //{
+        //    return SelectedCompanies != null && SelectedCompanies.Count > 0;
+        //}
 
     }
 }

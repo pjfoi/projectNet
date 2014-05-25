@@ -7,6 +7,9 @@
              xmlns:behavior="clr-namespace:UserInteface.Lib"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.DataContext>
+        <Binding Source="{StaticResource VMLocator}" Path="CompanyOverviewViewModel" />
+    </UserControl.DataContext>
     <Grid Style="{StaticResource ContentRoot}">
         <ScrollViewer>
             <StackPanel MinWidth="200">

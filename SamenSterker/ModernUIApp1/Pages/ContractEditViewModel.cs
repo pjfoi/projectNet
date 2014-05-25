@@ -9,7 +9,7 @@ using UserInteface.Lib;
 
 namespace UserInteface.Pages
 {
-    class ContractEditViewModel : INotifyPropertyChanged
+    public class ContractEditViewModel : INotifyPropertyChanged
     {
         #region Properties
         private Contract contract;

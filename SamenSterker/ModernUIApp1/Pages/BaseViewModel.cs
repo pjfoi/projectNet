@@ -3,7 +3,7 @@ using UserInteface.Lib;
 
 namespace UserInteface.Pages
 {
-    abstract class BaseViewModel : INotifyPropertyChanged
+    public abstract class BaseViewModel : INotifyPropertyChanged
     {
         
         private static readonly INavigationService navigator = new NavigationService();

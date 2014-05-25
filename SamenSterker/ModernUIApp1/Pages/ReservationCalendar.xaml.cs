@@ -16,16 +16,13 @@ using System.Windows.Shapes;
 namespace UserInteface.Pages
 {
     /// <summary>
-    /// Interaction logic for ReservationList.xaml
+    /// Interaction logic for ReservationCalendar.xaml
     /// </summary>
-    public partial class ReservationList : UserControl
+    public partial class ReservationCalendar : UserControl
     {
-        public ReservationList()
+        public ReservationCalendar()
         {
             InitializeComponent();
-
-            // create and assign the view model
-            this.DataContext = new ReservationListViewModel2();
         }
     }
 }
