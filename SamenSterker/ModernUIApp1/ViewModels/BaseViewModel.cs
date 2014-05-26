@@ -1,7 +1,8 @@
-﻿using System.ComponentModel;
+﻿using MediatorLib;
+using System.ComponentModel;
 using UserInteface.Lib;
 
-namespace UserInteface.Pages
+namespace UserInteface.ViewModels
 {
     public abstract class BaseViewModel : INotifyPropertyChanged
     {
@@ -11,6 +12,14 @@ namespace UserInteface.Pages
         protected static INavigationService GetNavigator()
         {
             return navigator;
+        }
+
+
+        static readonly Mediator mediator = ((App)App.Current).Mediator;
+        
+        public Mediator Mediator
+        {
+            get { return mediator; }
         }
 
         #region INotifyPropertyChanged

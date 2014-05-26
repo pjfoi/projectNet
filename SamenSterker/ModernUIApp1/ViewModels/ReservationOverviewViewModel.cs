@@ -1,6 +1,6 @@
 ﻿using SamenSterkerData;
 
-namespace UserInteface.Pages
+namespace UserInteface.ViewModels
 {
     public class ReservationOverviewViewModel : BaseOverviewViewModel<Reservation>
     {

@@ -5,9 +5,9 @@ using System.ComponentModel;
 using System.Linq;
 using UserInteface.Lib;
 
-namespace UserInteface.Pages
+namespace UserInteface.ViewModels
 {
-    public class ReservationEditViewModel : INotifyPropertyChanged
+    public class ReservationEditViewModel : BaseViewModel
     {
 
         #region Properties
@@ -85,17 +85,6 @@ namespace UserInteface.Pages
         {
             return new DateTime(((dt.Ticks + d.Ticks - 1) / d.Ticks) * d.Ticks);
         }
-
-        #region INotifyPropertyChanged
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged(string propertyName)
-        {
-            PropertyChangedEventHandler handler = PropertyChanged;
-            if (handler != null)
-                handler(this, new PropertyChangedEventArgs(propertyName));
-        }
-        #endregion INotifyPropertyChanged
-
 
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MediatorLib;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Configuration;
@@ -27,6 +28,13 @@ namespace UserInteface
         {
             get;
             internal set;
+        }
+
+        private static readonly Mediator mediator = new Mediator();
+
+        public Mediator Mediator
+        {
+            get { return mediator;  }
         }
 
     }

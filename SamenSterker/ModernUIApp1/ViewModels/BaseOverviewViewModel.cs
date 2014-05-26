@@ -5,7 +5,7 @@ using System.Linq;
 using System.Windows;
 using UserInteface.Lib;
 
-namespace UserInteface.Pages
+namespace UserInteface.ViewModels
 {
     public abstract class BaseOverviewViewModel<T> : BaseViewModel
     {

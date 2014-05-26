@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace UserInteface.Pages
+namespace UserInteface.ViewModels
 {
     public class ViewModelLocator
     {
@@ -56,12 +56,20 @@ namespace UserInteface.Pages
         }
         #endregion Reservation ViewModels
 
-        #region Login ViewModels
+        #region Login ViewModel
         private LoginViewModel loginVM = new LoginViewModel();
-        LoginViewModel LoginViewModel
+        public LoginViewModel LoginViewModel
         {
             get { return loginVM; }
         }
-        #endregion Login ViewModels
+        #endregion Login ViewModel
+
+        #region Menu ViewModel
+        private MenuViewModel menuVM = new MenuViewModel();
+        public MenuViewModel MenuViewModel
+        {
+            get { return menuVM; }
+        }
+        #endregion Menu ViewModels
     }
 }

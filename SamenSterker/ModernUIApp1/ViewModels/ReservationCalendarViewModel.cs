@@ -1,15 +1,11 @@
-﻿using System;
+﻿using SamenSterkerData;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Data;
-using SamenSterkerData;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using UserInteface.Lib;
 
-namespace UserInteface.Pages
+namespace UserInteface.ViewModels
 {
     public class ReservationCalendarViewModel : INotifyPropertyChanged
     {

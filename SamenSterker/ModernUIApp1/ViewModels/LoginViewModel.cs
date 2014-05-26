@@ -1,15 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Web.Security;
 using UserInteface.Lib;
-using WebMatrix.WebData;
 
-namespace UserInteface.Pages
+namespace UserInteface.ViewModels
 {
-    class LoginViewModel
+    public class LoginViewModel
     {
         #region Properties
         private string username;
@@ -33,13 +28,6 @@ namespace UserInteface.Pages
         public LoginViewModel()
         {
             CreateCommands();
-
-            //Roles.CreateRole("admin");
-
-            //if (! WebSecurity.UserExists("testuser"))
-            //{
-            //    WebSecurity.CreateUserAndAccount("testuser", "Pass!");
-            //}
         }
 
         private void CreateCommands()

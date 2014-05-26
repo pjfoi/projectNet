@@ -7,9 +7,9 @@ using System.Text;
 using System.Threading.Tasks;
 using UserInteface.Lib;
 
-namespace UserInteface.Pages
+namespace UserInteface.ViewModels
 {
-    public class ContractEditViewModel : INotifyPropertyChanged
+    public class ContractEditViewModel : BaseViewModel
     {
         #region Properties
         private Contract contract;
@@ -85,15 +85,5 @@ namespace UserInteface.Pages
         {
             Contract = contract;
         }
-
-        #region INotifyPropertyChanged
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged(string propertyName)
-        {
-            PropertyChangedEventHandler handler = PropertyChanged;
-            if (handler != null)
-                handler(this, new PropertyChangedEventArgs(propertyName));
-        }
-        #endregion INotifyPropertyChanged
     }
 }

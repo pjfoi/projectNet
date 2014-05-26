@@ -42,6 +42,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\Documents\PXL\FirstFloor.ModernUI.dll</HintPath>
     </Reference>
+    <Reference Include="MediatorLib">
+      <HintPath>..\..\..\..\..\Documents\PXL\MediatorLib.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\Documents\PXL\Newtonsoft.Json.dll</HintPath>
@@ -100,10 +103,12 @@
     <Compile Include="Pages\ReservationCalendar.xaml.cs">
       <DependentUpon>ReservationCalendar.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\ReservationCalendarViewModel.cs" />
-    <Compile Include="Pages\ViewModelLocator.cs" />
-    <Compile Include="Pages\BaseOverviewViewModel.cs" />
-    <Compile Include="Pages\BaseViewModel.cs" />
+    <Compile Include="Lib\MediatorMessages.cs" />
+    <Compile Include="ViewModels\MenuViewModel.cs" />
+    <Compile Include="ViewModels\ReservationCalendarViewModel.cs" />
+    <Compile Include="ViewModels\ViewModelLocator.cs" />
+    <Compile Include="ViewModels\BaseOverviewViewModel.cs" />
+    <Compile Include="ViewModels\BaseViewModel.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
@@ -179,13 +184,13 @@
     <Compile Include="Pages\CompanyEdit.xaml.cs">
       <DependentUpon>CompanyEdit.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\CompanyEditViewModel.cs" />
+    <Compile Include="ViewModels\CompanyEditViewModel.cs" />
     <Compile Include="Pages\ContractEdit.xaml.cs">
       <DependentUpon>ContractEdit.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\ContractEditViewModel.cs" />
-    <Compile Include="Pages\ContractOverviewViewModel.cs" />
-    <Compile Include="Pages\CompanyOverviewViewModel.cs" />
+    <Compile Include="ViewModels\ContractEditViewModel.cs" />
+    <Compile Include="ViewModels\ContractOverviewViewModel.cs" />
+    <Compile Include="ViewModels\CompanyOverviewViewModel.cs" />
     <Compile Include="Pages\CompanyOverview.xaml.cs">
       <DependentUpon>CompanyOverview.xaml</DependentUpon>
     </Compile>
@@ -198,15 +203,15 @@
     <Compile Include="Pages\Login.xaml.cs">
       <DependentUpon>Login.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\LoginViewModel.cs" />
+    <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="Pages\ReservationEdit.xaml.cs">
       <DependentUpon>ReservationEdit.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\ReservationEditViewModel.cs" />
+    <Compile Include="ViewModels\ReservationEditViewModel.cs" />
     <Compile Include="Pages\ReservationOverview.xaml.cs">
       <DependentUpon>ReservationOverview.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\ReservationOverviewViewModel.cs" />
+    <Compile Include="ViewModels\ReservationOverviewViewModel.cs" />
     <Compile Include="Pages\Settings.xaml.cs">
       <DependentUpon>Settings.xaml</DependentUpon>
     </Compile>

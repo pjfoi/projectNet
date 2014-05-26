@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MediatorLib;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -10,6 +11,49 @@ namespace UserInteface.Lib
 {
     public class Auth : INotifyPropertyChanged
     {
+        #region Properties
+        private string _username;
+        public string Username
+        {
+            get { return _username; }
+            internal set
+            {
+                _username = value;
+                OnPropertyChanged("Username");
+            }
+        }
+
+        private bool _isAdmin;
+        public bool IsAdmin
+        {
+            get { return _isAdmin; }
+            internal set
+            {
+                _isAdmin = value;
+                OnPropertyChanged("IsAdmin");
+            }
+        }
+
+        private bool _isClient;
+        public bool isClient
+        {
+            get { return _isClient; }
+            internal set
+            {
+                _isClient = value;
+                OnPropertyChanged("IsClient");
+            }
+        }
+
+        static readonly Mediator mediator = ((App)App.Current).Mediator;
+
+        public Mediator Mediator
+        {
+            get { return mediator; }
+        }
+        #endregion Properties
+
+
         public static void Initialize()
         {
             System.Diagnostics.Debug.WriteLine("auth initialize");
@@ -40,49 +84,38 @@ namespace UserInteface.Lib
             if (System.Web.Security.Membership.ValidateUser(username, password))
             {
                 Username = username;
+                UpdateCurrentUser();
                 succes = true;
             }
             return succes;
         }
 
-        private string _username;
-        public string Username
+        public void Logout()
         {
-            get { return _username; }
-            set 
-            {
-                _username = value;
-                OnPropertyChanged("Username");
-                UpdateCurrentUser();
-            }
-        }
-
-        private bool _isAdmin;
-        public bool IsAdmin
-        {
-            get { return _isAdmin; }
-            internal set
-            {
-                _isAdmin = value;
-                OnPropertyChanged("IsAdmin");
-            }
-        }
-
-        private bool _isClient;
-        public bool isClient
-        {
-            get { return _isClient; }
-            internal set
-            {
-                _isClient = value;
-                OnPropertyChanged("IsClient");
-            }
+            Username = "";
+            Mediator.NotifyColleagues<String>(MediatorMessages.Logout);
         }
 
         private void UpdateCurrentUser()
         {
             IsAdmin = Roles.IsUserInRole(Username, "admin");
             isClient = Roles.IsUserInRole(Username, "client");
+
+            if (IsAdmin)
+            {
+                Mediator.NotifyColleagues<String>
+                    (MediatorMessages.LoginAdmin, Username);
+                System.Diagnostics.Debug.WriteLine("is admin - send mediator message");
+            }
+
+            if (isClient)
+            {
+                Mediator.NotifyColleagues<String>
+                    (MediatorMessages.LoginClient, Username);
+            }
+            
+            
+
         }
 
         #region INotifyPropertyChanged

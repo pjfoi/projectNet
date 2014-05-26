@@ -6,16 +6,20 @@ using System.Text;
 using System.Threading.Tasks;
 using UserInteface.Lib;
 
-namespace UserInteface.Pages
+namespace UserInteface.ViewModels
 {
-    public class CompanyEditViewModel
+    public class CompanyEditViewModel : BaseViewModel
     {
         #region Properties
         private Company company;
         public Company Company
         {
             get { return company; }
-            set { company = value; }
+            set 
+            { 
+                company = value;
+                OnPropertyChanged("Company");
+            }
         }
 
         public DelegateCommand SaveCommand
@@ -54,7 +58,10 @@ namespace UserInteface.Pages
         public void ShowCompany(Company company)
         {
             Company = company;
-            System.Diagnostics.Debug.WriteLine("Show Company");
+            System.Diagnostics.Debug.WriteLine(
+                String.Format("Show Company {0}", company),
+                "CompanyEditVM"
+            );
         }
 
     }

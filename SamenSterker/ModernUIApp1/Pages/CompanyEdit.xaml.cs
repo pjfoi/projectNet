@@ -2,19 +2,8 @@
 using Newtonsoft.Json;
 using SamenSterkerData;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using UserInteface.ViewModels;
 
 namespace UserInteface.Pages
 {
@@ -26,13 +15,7 @@ namespace UserInteface.Pages
         public CompanyEdit()
         {
             InitializeComponent();
-
-            // create and assign the view model
-            //this.viewmodel = new CompanyEditViewModel();
-            //this.DataContext = viewmodel;
         }
-
-        //private CompanyEditViewModel viewmodel;
 
         public void OnFragmentNavigation(FirstFloor.ModernUI.Windows.Navigation.FragmentNavigationEventArgs e) { }
 
@@ -49,9 +32,8 @@ namespace UserInteface.Pages
             {
                 Company company = JsonConvert.DeserializeObject<Company>(jsonParam);
 
-
-                // show the passed contract for editting
-                ((CompanyEditViewModel) this.DataContext).ShowCompany(company); //viewmodel.ShowCompany(company);
+                // show the passed company for editting
+                ((CompanyEditViewModel) this.DataContext).ShowCompany(company);
             }
         }
 
