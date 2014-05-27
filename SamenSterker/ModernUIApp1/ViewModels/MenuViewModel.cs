@@ -1,5 +1,6 @@
 ﻿using FirstFloor.ModernUI.Presentation;
 using MediatorLib;
+using SamenSterkerData;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,8 +28,8 @@ namespace UserInteface.ViewModels
             AddSettingsGroup();
         }
 
-        [MediatorMessageSink(MediatorMessages.LoginClient, ParameterType = typeof(string))]
-        private void SetClientMenu(string username)
+        [MediatorMessageSink(MediatorMessages.LoginClient, ParameterType = typeof(User))]
+        private void SetClientMenu(User user)
         {
             this.MenuLinkGroups.Clear();
             AddHomeGroup();
@@ -37,8 +38,8 @@ namespace UserInteface.ViewModels
             AddReservationGroup();
         }
 
-        [MediatorMessageSink(MediatorMessages.LoginAdmin, ParameterType = typeof(string))]
-        private void SetAdminMenu(string username)
+        [MediatorMessageSink(MediatorMessages.LoginAdmin, ParameterType = typeof(User))]
+        private void SetAdminMenu(User user)
         {
             System.Diagnostics.Debug.WriteLine("update admin menu", "MenuViewModel");
             this.MenuLinkGroups.Clear();

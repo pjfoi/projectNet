@@ -21,7 +21,7 @@ namespace UserInteface.Pages
 
         public void OnNavigatedTo(FirstFloor.ModernUI.Windows.Navigation.NavigationEventArgs e)
         {
-         
+            ReservationEditViewModel vm = (ReservationEditViewModel) this.DataContext;
             // cheating (need an absolute path)
             Uri source = new Uri(new Uri("http://example.com"), e.Source);
             // get reservation from url 
@@ -32,7 +32,11 @@ namespace UserInteface.Pages
                 Reservation reservation = Newtonsoft.Json.JsonConvert.DeserializeObject<Reservation>(jsonParam);
 
                 // show the passed reservation for editting
-                ((ReservationEditViewModel) this.DataContext).ShowReservation(reservation);
+                vm.ShowReservation(reservation);
+            }
+            else
+            {
+                vm.ShowReservation();
             }
         }
 

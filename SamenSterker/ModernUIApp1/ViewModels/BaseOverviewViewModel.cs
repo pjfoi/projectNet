@@ -14,6 +14,9 @@ namespace UserInteface.ViewModels
         public ObservableCollection<T> Items
         {
             get { return items; }
+            private set {
+                items = value;
+            }
         }
 
         private IList<Object> _selectedItems;
@@ -47,16 +50,24 @@ namespace UserInteface.ViewModels
             get { return commands; }
             set { commands = value; }
         }
+
+        private Func<IEnumerable<T>> getItems;
+        protected Func<IEnumerable<T>> GetItems
+        {
+            get { return getItems; }
+            set { getItems = value; }
+        }
         #endregion Properties
 
         public BaseOverviewViewModel(
             string name,
-            IList<T> items,
+            Func<IEnumerable<T>> getItems,
             Action<IEnumerable<T>> deleteItems,
             Action<T> editItem
         )
         {
-            this.items = new ObservableCollection<T>(items);
+            //this.items = new ObservableCollection<T>(items);
+            GetItems = getItems;
 
             #region DeleteCommand
             DeleteCommand = new DelegateCommand(execute: (obj) =>
@@ -98,6 +109,11 @@ namespace UserInteface.ViewModels
             Commands = new List<DelegateCommand>();
             Commands.Add(DeleteCommand);
             Commands.Add(EditCommand);
+        }
+
+        public void Refresh()
+        {
+            Items = new ObservableCollection<T>(GetItems());
         }
 
         protected bool IsOneItemSelected()

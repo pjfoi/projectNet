@@ -23,6 +23,7 @@ namespace UserInteface.Pages
 
         public void OnNavigatedTo(FirstFloor.ModernUI.Windows.Navigation.NavigationEventArgs e)
         {
+            ContractEditViewModel vm = ((ContractEditViewModel)this.DataContext);
             // cheating (need an absolute path)
             Uri source = new Uri(new Uri("http://example.com"), e.Source);
             // get contract from url 
@@ -33,7 +34,11 @@ namespace UserInteface.Pages
                 Contract contract = JsonConvert.DeserializeObject<Contract>(jsonParam);
 
                 // show the passed contract for editting
-                ((ContractEditViewModel)this.DataContext).ShowContract(contract);
+                vm.ShowContract(contract);
+            }
+            else
+            {
+                vm.ShowContract();
             }
         }
 

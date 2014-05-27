@@ -18,11 +18,22 @@ namespace UserInteface
 
         public App()
         {
+            //UserInteface.Lib.Auth.Initialize();
+
+            //Auth = new UserInteface.Lib.Auth();
+            //System.Diagnostics.Debug.WriteLine("Created Auth", "App");
+        }
+
+        protected override void OnStartup(StartupEventArgs e)
+        {
             UserInteface.Lib.Auth.Initialize();
 
             Auth = new UserInteface.Lib.Auth();
             System.Diagnostics.Debug.WriteLine("Created Auth", "App");
+
+            base.OnStartup(e);
         }
+
 
         public UserInteface.Lib.Auth Auth
         {

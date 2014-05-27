@@ -38,24 +38,39 @@ namespace UserInteface.ViewModels
 
         public ReservationEditViewModel()
         {
-            Reservation = CreateDefaultReservation();
             Locations = LocationDB.GetAll().ToList<Location>();
             CreateCommands();
+            ShowReservation();
         }
 
         private void CreateCommands()
         {
             SaveCommand = new DelegateCommand(execute: (obj) =>
                 {
-                    System.Diagnostics.Debug.WriteLine("Save reservation");
-
                     // TEMPORARLY !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                     Reservation.CompanyId = 2;
+
+                    int nbFieldsLeftOpen = NbRequiredFieldsOpen(
+                        Reservation.StartDate,
+                        Reservation.EndDate,
+                        Reservation.LocationId,
+                        Reservation.CompanyId
+                    );
+                    if (nbFieldsLeftOpen > 0)
+                    {
+                        Xceed.Wpf.Toolkit.MessageBox.Show(
+                            String.Format("U hebt {0} veld(en) niet ingevuld.", nbFieldsLeftOpen), 
+                            "Misukt", System.Windows.MessageBoxButton.OK
+                        );
+                        return;
+                    }
 
                     ReservationDB.Save(Reservation);
                     Xceed.Wpf.Toolkit.MessageBox.Show(
                         "Reservatie opgeslagen", "Succes", System.Windows.MessageBoxButton.OK
                     );
+
+                    Mediator.NotifyColleagues<string>(MediatorMessages.ReservationEdit);
 
                     INavigationService navigator = new NavigationService();
                     navigator.Navigate<ReservationOverviewViewModel>();
@@ -73,6 +88,11 @@ namespace UserInteface.ViewModels
             defaultReservation.StartDate = start;
             defaultReservation.EndDate = start.AddHours(1);
             return defaultReservation;
+        }
+
+        public void ShowReservation()
+        {
+            ShowReservation(CreateDefaultReservation());
         }
 
         public void ShowReservation(Reservation reservation)

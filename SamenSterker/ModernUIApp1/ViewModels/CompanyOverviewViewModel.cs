@@ -7,6 +7,7 @@ using System.Collections.ObjectModel;
 
 using SamenSterkerData;
 using UserInteface.Lib;
+using MediatorLib;
 
 namespace UserInteface.ViewModels
 {
@@ -14,16 +15,13 @@ namespace UserInteface.ViewModels
     {
         public CompanyOverviewViewModel() : base(
             name: "reservatie",
-            items: CompanyDB.GetAll(),
+            getItems: () => CompanyDB.GetAll(),
             deleteItems: (companies) => CompanyDB.Delete(companies),
             editItem: (company) => {
-                System.Diagnostics.Debug.WriteLine(
-                    "pass company " + company.ToString() + " for editting",
-                    "CompanyOverviewVM"
-                );
                 GetNavigator().Navigate<CompanyEditViewModel>(company);
             }
         ) {
+            Mediator.Register(this);
 
             AddContractCommand = new DelegateCommand(execute: (obj) =>
             {
@@ -46,5 +44,16 @@ namespace UserInteface.ViewModels
             internal set;
         }
 
+        [MediatorMessageSink(MediatorMessages.LoginAdmin, ParameterType = typeof(User))]
+        private void LoadCompanies(User user)
+        {
+            Refresh();
+        }
+
+        [MediatorMessageSink(MediatorMessages.ContractEdit, ParameterType = typeof(string))]
+        private void UpdateCompanies(string parameter)
+        {
+            Refresh();
+        }
     }
 }

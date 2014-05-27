@@ -44,14 +44,14 @@ namespace UserInteface.ViewModels
                             "Succes", System.Windows.MessageBoxButton.OK
                         );
 
-                        System.Diagnostics.Debug.WriteLine(
-                            String.Format("{0} is admin : {1} is client {2}",
-                                          auth.Username,
-                                          Roles.IsUserInRole(auth.Username, "admin"),
-                                          Roles.IsUserInRole(auth.Username, "client")
-                            ),
-                            "App"
-                        );
+                        //System.Diagnostics.Debug.WriteLine(
+                        //    String.Format("{0} is admin : {1} is client {2}",
+                        //                  auth.Username,
+                        //                  Roles.IsUserInRole(auth.Username, "admin"),
+                        //                  Roles.IsUserInRole(auth.Username, "client")
+                        //    ),
+                        //    "App"
+                        //);
 
                     }
                     else

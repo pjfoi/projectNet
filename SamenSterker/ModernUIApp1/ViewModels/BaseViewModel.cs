@@ -1,5 +1,8 @@
 ﻿using MediatorLib;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using UserInteface.Lib;
 
 namespace UserInteface.ViewModels
@@ -20,6 +23,13 @@ namespace UserInteface.ViewModels
         public Mediator Mediator
         {
             get { return mediator; }
+        }
+
+
+        // quick and dirty "required fields" check
+        protected int NbRequiredFieldsOpen(params object[] fields)
+        {
+            return fields.Count((item) => item == null || item.Equals(0) || String.IsNullOrWhiteSpace(item.ToString()));
         }
 
         #region INotifyPropertyChanged

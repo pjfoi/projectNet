@@ -39,6 +39,18 @@ namespace SamenSterkerData
             }
         }
 
+        public static List<Contract> GetFromCompany(Company company)
+        {
+            using (SqlConnection connection = SamenSterkerDB.GetConnection())
+            {
+                return connection.Query<Contract, Company, ContractFormula, Contract>(
+                         sql: selectAllQuery + "WHERE CompanyId = @Id",
+                         map: Mapper,
+                         param: company
+                       ).ToList<Contract>();
+            }
+        }
+
         public static Contract GetById(int contractId)
         {
             using (SqlConnection connection = SamenSterkerDB.GetConnection())

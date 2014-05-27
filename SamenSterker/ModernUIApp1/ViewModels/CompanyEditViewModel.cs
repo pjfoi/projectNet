@@ -31,21 +31,40 @@ namespace UserInteface.ViewModels
 
         public CompanyEditViewModel()
         {
-            Company = new Company();
+            ShowCompany();
             CreateCommands();
-
-            System.Diagnostics.Debug.WriteLine("create companyeditviewmodel");
         }
 
         private void CreateCommands()
         {
             SaveCommand = new DelegateCommand(execute: (obj) =>
             {
+                int nbFieldsLeftOpen = NbRequiredFieldsOpen(
+                    Company.Name,
+                    Company.Street,
+                    Company.Zipcode,
+                    Company.City,
+                    Company.Country,
+                    Company.Email,
+                    Company.Phone,
+                    Company.Employees
+                );
+                if (nbFieldsLeftOpen > 0)
+                {
+                    Xceed.Wpf.Toolkit.MessageBox.Show(
+                        String.Format("U hebt {0} veld(en) niet ingevuld.", nbFieldsLeftOpen),
+                        "Misukt", System.Windows.MessageBoxButton.OK
+                    );
+                    return;
+                }
+
                 CompanyDB.Save(Company);
 
                 Xceed.Wpf.Toolkit.MessageBox.Show(
                     "Bedrijf opgeslagen", "Succes", System.Windows.MessageBoxButton.OK
                 );
+
+                Mediator.NotifyColleagues<string>(MediatorMessages.CompanyEdit);
 
                 INavigationService navigator = new NavigationService();
                 navigator.Navigate<CompanyOverviewViewModel>();
@@ -53,6 +72,11 @@ namespace UserInteface.ViewModels
             }//,
                 //canExecute: (obj) => { return AreMultipleContractsSelected(); }
             );
+        }
+
+        public void ShowCompany()
+        {
+            ShowCompany(new Company());
         }
 
         public void ShowCompany(Company company)

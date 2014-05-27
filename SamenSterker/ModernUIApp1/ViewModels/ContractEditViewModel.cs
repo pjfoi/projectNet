@@ -46,11 +46,10 @@ namespace UserInteface.ViewModels
 
         public ContractEditViewModel()
         {
+            CreateCommands();
             Companies = CompanyDB.GetAll();
             Formulas = ContractFormulaDB.GetAll().ToList<ContractFormula>();
-            Contract = CreateDefaultContract();
-
-            CreateCommands();
+            ShowContract();
         }
 
         private Contract CreateDefaultContract()
@@ -64,10 +63,27 @@ namespace UserInteface.ViewModels
         {
             SaveCommand = new DelegateCommand(execute: (obj) =>
             {
+                int nbFieldsLeftOpen = NbRequiredFieldsOpen(
+                    Contract.CompanyId,
+                    Contract.ContractFormulaId,
+                    Contract.StartDate,
+                    Contract.EndDate
+                );
+                if (nbFieldsLeftOpen > 0)
+                {
+                    Xceed.Wpf.Toolkit.MessageBox.Show(
+                        String.Format("U hebt {0} veld(en) niet ingevuld.", nbFieldsLeftOpen),
+                        "Misukt", System.Windows.MessageBoxButton.OK
+                    );
+                    return;
+                }
+
                 ContractDB.Save(Contract);
                 Xceed.Wpf.Toolkit.MessageBox.Show(
                     "Contract opgeslagen", "Succes", System.Windows.MessageBoxButton.OK
                 );
+
+                Mediator.NotifyColleagues<string>(MediatorMessages.ContractEdit);
 
                 INavigationService navigator = new NavigationService();
                 navigator.Navigate<ContractOverviewViewModel>();
@@ -79,6 +95,11 @@ namespace UserInteface.ViewModels
                 //    return Contract.Formula != null;
                 //}
             );
+        }
+
+        public void ShowContract()
+        {
+            ShowContract(CreateDefaultContract());
         }
 
         public void ShowContract(Contract contract)

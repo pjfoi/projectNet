@@ -1,4 +1,5 @@
-﻿using SamenSterkerData;
+﻿using MediatorLib;
+using SamenSterkerData;
 using UserInteface.Lib;
 
 namespace UserInteface.ViewModels
@@ -8,7 +9,7 @@ namespace UserInteface.ViewModels
 
         public ContractOverviewViewModel() : base(
             name: "contract",
-            items: ContractDB.GetAll(),
+            getItems: () => ContractDB.GetAll(),
             deleteItems: (contracts) => ContractDB.Delete(contracts),
             editItem: (contract) =>
             {
@@ -16,6 +17,8 @@ namespace UserInteface.ViewModels
             }
         )
         {
+            Mediator.Register(this);
+
             #region StopCommand
             StopCommand = new DelegateCommand(execute: (obj) =>
             {
@@ -39,6 +42,26 @@ namespace UserInteface.ViewModels
         {
             get;
             internal set;
+        }
+
+        [MediatorMessageSink(MediatorMessages.LoginAdmin, ParameterType = typeof(User))]
+        private void ShowAllContracts(User user)
+        {
+            GetItems = () => ContractDB.GetAll();
+            Refresh();
+        }
+
+        [MediatorMessageSink(MediatorMessages.LoginClient, ParameterType = typeof(User))]
+        private void ShowUserCompanyContracts(User user)
+        {
+            GetItems = () => ContractDB.GetFromCompany(user.Company);
+            Refresh();
+        }
+
+        [MediatorMessageSink(MediatorMessages.ContractEdit, ParameterType = typeof(string))]
+        private void UpdateContracts(string parameter)
+        {
+            Refresh();
         }
 
     }
