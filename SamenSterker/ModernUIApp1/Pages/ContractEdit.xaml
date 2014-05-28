@@ -18,8 +18,10 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
                         <RowDefinition Height="*" />
+                        <RowDefinition Height="0" /><!-- hide enddate combobox-->
                         <RowDefinition Height="*" />
-                        <RowDefinition Height="*" />
+                        <RowDefinition Height="{Binding Path=Auth.IsAdmin, Source={x:Static Application.Current},
+                                        Converter={StaticResource BoolToRowHeight}, FallbackValue=0}" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
@@ -53,14 +55,16 @@
                     />
                     <!--SelectedValue="{Binding Path=Name}"-->
 
+                    <Button Height="25" Width="75" HorizontalAlignment="Left" 
+                            Grid.Row="5" Grid.Column="5" Margin="0,5"
+                            Name="SaveBtn" VerticalAlignment="Top" Command="{Binding Path=SaveCommand}">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="../Assets/appbar.save.png" Height="18" Width="18" Margin="-10,0,0,0" />
+                            <TextBlock>Save</TextBlock>
+                        </StackPanel>
+                    </Button>
                 </Grid>
-                <Button Height="25" Width="75" HorizontalAlignment="Left"
-                        Name="SaveBtn" VerticalAlignment="Top" Command="{Binding Path=SaveCommand}">
-                    <StackPanel Orientation="Horizontal">
-                        <Image Source="../Assets/appbar.save.png" Height="18" Width="18" Margin="-10,0,0,0" />
-                        <TextBlock>Save</TextBlock>
-                    </StackPanel>
-                </Button>
+
 
             </StackPanel>
         </ScrollViewer>

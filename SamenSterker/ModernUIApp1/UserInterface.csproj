@@ -100,6 +100,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Lib\Auth.cs" />
+    <Compile Include="Lib\BoolToGridRowHeightConverter.cs" />
     <Compile Include="Pages\ReservationCalendar.xaml.cs">
       <DependentUpon>ReservationCalendar.xaml</DependentUpon>
     </Compile>

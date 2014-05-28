@@ -1,4 +1,5 @@
 ﻿using SamenSterkerData;
+using SamenSterkerData.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -63,11 +64,18 @@ namespace UserInteface.ViewModels
         {
             SaveCommand = new DelegateCommand(execute: (obj) =>
             {
+                // set company id if a client is logged in
+                Auth auth = ((App)App.Current).Auth;
+                if (auth.isClient)
+                {
+                    Contract.CompanyId = auth.User.CompanyId;
+                }
+
+                // check if all required fields have been filled in
                 int nbFieldsLeftOpen = NbRequiredFieldsOpen(
                     Contract.CompanyId,
                     Contract.ContractFormulaId,
-                    Contract.StartDate,
-                    Contract.EndDate
+                    Contract.StartDate
                 );
                 if (nbFieldsLeftOpen > 0)
                 {
@@ -78,23 +86,34 @@ namespace UserInteface.ViewModels
                     return;
                 }
 
-                ContractDB.Save(Contract);
-                Xceed.Wpf.Toolkit.MessageBox.Show(
-                    "Contract opgeslagen", "Succes", System.Windows.MessageBoxButton.OK
-                );
+                // sett end date based on selected contract formula
+                Contract.Formula = GetContractFormulaByIdLocal(Contract.ContractFormulaId);
+                Contract.EndDate = Contract.StartDate.AddMonths(Contract.Formula.PeriodInMonths);
 
-                Mediator.NotifyColleagues<string>(MediatorMessages.ContractEdit);
+                // save the contract
+                try
+                {
+                    ContractDB.Save(Contract);
+                    Mediator.NotifyColleagues<string>(MediatorMessages.ContractEdit, "");
+                    Xceed.Wpf.Toolkit.MessageBox.Show(
+                        "Contract opgeslagen", "Succes", System.Windows.MessageBoxButton.OK
+                    );
 
-                INavigationService navigator = new NavigationService();
-                navigator.Navigate<ContractOverviewViewModel>();
+                    // go to contract overview
+                    Navigator.Navigate<ContractOverviewViewModel>();
+                }
+                catch (InvalidContractException exception)
+                {
+                    Xceed.Wpf.Toolkit.MessageBox.Show(
+                        exception.Message, "Mislukt", System.Windows.MessageBoxButton.OK
+                    );
+                }
+            });
+        }
 
-                // TODO clear form
-                Contract = CreateDefaultContract();
-            }//,
-                //canExecute: (obj) => { 
-                //    return Contract.Formula != null;
-                //}
-            );
+        private ContractFormula GetContractFormulaByIdLocal(int id)
+        {
+            return Formulas.FirstOrDefault((f) => f.Id == id);
         }
 
         public void ShowContract()

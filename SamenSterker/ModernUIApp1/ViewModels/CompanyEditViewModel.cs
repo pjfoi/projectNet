@@ -31,7 +31,6 @@ namespace UserInteface.ViewModels
 
         public CompanyEditViewModel()
         {
-            ShowCompany();
             CreateCommands();
         }
 
@@ -39,6 +38,7 @@ namespace UserInteface.ViewModels
         {
             SaveCommand = new DelegateCommand(execute: (obj) =>
             {
+                // check if all required fields have been filled in
                 int nbFieldsLeftOpen = NbRequiredFieldsOpen(
                     Company.Name,
                     Company.Street,
@@ -58,20 +58,19 @@ namespace UserInteface.ViewModels
                     return;
                 }
 
+                // save the company
                 CompanyDB.Save(Company);
-
                 Xceed.Wpf.Toolkit.MessageBox.Show(
                     "Bedrijf opgeslagen", "Succes", System.Windows.MessageBoxButton.OK
                 );
+                Mediator.NotifyColleagues<string>(MediatorMessages.CompanyEdit, "");
 
-                Mediator.NotifyColleagues<string>(MediatorMessages.CompanyEdit);
+                // navigate to the company overview
+                Navigator.Navigate<CompanyOverviewViewModel>();
 
-                INavigationService navigator = new NavigationService();
-                navigator.Navigate<CompanyOverviewViewModel>();
-
-            }//,
-                //canExecute: (obj) => { return AreMultipleContractsSelected(); }
-            );
+                // clear fields
+                //ShowCompany();
+            });
         }
 
         public void ShowCompany()
@@ -82,10 +81,6 @@ namespace UserInteface.ViewModels
         public void ShowCompany(Company company)
         {
             Company = company;
-            System.Diagnostics.Debug.WriteLine(
-                String.Format("Show Company {0}", company),
-                "CompanyEditVM"
-            );
         }
 
     }

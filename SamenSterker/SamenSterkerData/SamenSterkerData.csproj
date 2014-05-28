@@ -47,6 +47,9 @@
     <Compile Include="ContractDB.cs" />
     <Compile Include="ContractFormula.cs" />
     <Compile Include="ContractFormulaDB.cs" />
+    <Compile Include="Exceptions\InvalidContractException.cs" />
+    <Compile Include="Exceptions\InvalidReservationException.cs" />
+    <Compile Include="Exceptions\LocationOccupiedException.cs" />
     <Compile Include="Location.cs" />
     <Compile Include="LocationDB.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

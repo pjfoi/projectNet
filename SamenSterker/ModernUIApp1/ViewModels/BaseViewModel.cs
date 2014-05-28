@@ -11,12 +11,15 @@ namespace UserInteface.ViewModels
     {
         
         private static readonly INavigationService navigator = new NavigationService();
+        protected INavigationService Navigator
+        {
+            get { return navigator;  }
+        }
 
         protected static INavigationService GetNavigator()
         {
             return navigator;
         }
-
 
         static readonly Mediator mediator = ((App)App.Current).Mediator;
         

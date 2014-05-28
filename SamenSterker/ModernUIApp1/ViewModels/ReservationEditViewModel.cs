@@ -1,4 +1,5 @@
 ﻿using SamenSterkerData;
+using SamenSterkerData.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -29,6 +30,13 @@ namespace UserInteface.ViewModels
             set { locations = value; }
         }
 
+        private IList<Company> companies;
+        public IList<Company> Companies
+        {
+            get { return companies; }
+            set { companies = value; }
+        }
+
         public DelegateCommand SaveCommand
         {
             get;
@@ -39,6 +47,7 @@ namespace UserInteface.ViewModels
         public ReservationEditViewModel()
         {
             Locations = LocationDB.GetAll().ToList<Location>();
+            Companies = CompanyDB.GetAll();
             CreateCommands();
             ShowReservation();
         }
@@ -47,9 +56,14 @@ namespace UserInteface.ViewModels
         {
             SaveCommand = new DelegateCommand(execute: (obj) =>
                 {
-                    // TEMPORARLY !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                    Reservation.CompanyId = 2;
+                    // set company id if a client is logged in
+                    Auth auth = ((App)App.Current).Auth;
+                    if (auth.isClient)
+                    {
+                        Reservation.CompanyId = auth.User.CompanyId;
+                    }
 
+                    // check if all required fields have been filled in
                     int nbFieldsLeftOpen = NbRequiredFieldsOpen(
                         Reservation.StartDate,
                         Reservation.EndDate,
@@ -65,19 +79,31 @@ namespace UserInteface.ViewModels
                         return;
                     }
 
+                    try
+                    {
+                        ReservationDB.IsReservationPossible(reservation);
+                    }
+                    catch (InvalidReservationException exception)
+                    {
+                        Xceed.Wpf.Toolkit.MessageBox.Show(
+                            exception.Message, "Mislukt", System.Windows.MessageBoxButton.OK
+                        );
+                        return;
+                    }
+
+                    // save the reservation
                     ReservationDB.Save(Reservation);
+                    Mediator.NotifyColleagues<string>(MediatorMessages.ReservationEdit, "");
                     Xceed.Wpf.Toolkit.MessageBox.Show(
                         "Reservatie opgeslagen", "Succes", System.Windows.MessageBoxButton.OK
                     );
 
-                    Mediator.NotifyColleagues<string>(MediatorMessages.ReservationEdit);
+                    // navigate to reservation overview
+                    Navigator.Navigate<ReservationOverviewViewModel>();
 
-                    INavigationService navigator = new NavigationService();
-                    navigator.Navigate<ReservationOverviewViewModel>();
-
-                    Reservation = CreateDefaultReservation();
-                }//,
-                //canExecute: (obj) => { return AreMultipleContractsSelected(); }
+                    // clear fields
+                    //ShowReservation();
+                }
             );
         }
 

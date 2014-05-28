@@ -1,6 +1,6 @@
 ﻿using SamenSterkerData;
-using System;
 using System.Windows.Controls;
+using UserInteface.Lib;
 using UserInteface.ViewModels;
 
 namespace UserInteface.Pages
@@ -21,17 +21,10 @@ namespace UserInteface.Pages
 
         public void OnNavigatedTo(FirstFloor.ModernUI.Windows.Navigation.NavigationEventArgs e)
         {
+            Reservation reservation = NavigationService.GetParameter<Reservation>(e);
             ReservationEditViewModel vm = (ReservationEditViewModel) this.DataContext;
-            // cheating (need an absolute path)
-            Uri source = new Uri(new Uri("http://example.com"), e.Source);
-            // get reservation from url 
-            string jsonParam = System.Web.HttpUtility.ParseQueryString(source.Query).Get("param");
-
-            if (jsonParam != null)
+            if (reservation != null)
             {
-                Reservation reservation = Newtonsoft.Json.JsonConvert.DeserializeObject<Reservation>(jsonParam);
-
-                // show the passed reservation for editting
                 vm.ShowReservation(reservation);
             }
             else

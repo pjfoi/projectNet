@@ -1,11 +1,7 @@
 ﻿using MediatorLib;
 using SamenSterkerData;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Web.Security;
 using WebMatrix.WebData;
 
@@ -121,8 +117,6 @@ namespace UserInteface.Lib
         private void UpdateCurrentUser(string username)
         {
             User = UserDB.GetByUsername(username);
-            //System.Diagnostics.Debug.WriteLine(String.Format("username {0} company {1}", receivedUser.Username, receivedUser.Company.Name), "Auth");
-            //this._user = receivedUser;
             Username = username;
 
             IsAdmin = Roles.IsUserInRole(Username, "admin");

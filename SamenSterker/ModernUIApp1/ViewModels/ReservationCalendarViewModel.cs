@@ -1,4 +1,5 @@
-﻿using SamenSterkerData;
+﻿using MediatorLib;
+using SamenSterkerData;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -7,7 +8,7 @@ using UserInteface.Lib;
 
 namespace UserInteface.ViewModels
 {
-    public class ReservationCalendarViewModel : INotifyPropertyChanged
+    public class ReservationCalendarViewModel : BaseViewModel
     {
         #region Properties
         private DateTime? selectedDate;
@@ -47,13 +48,9 @@ namespace UserInteface.ViewModels
         public ReservationCalendarViewModel()
         {
             CreateCommands();
+            Mediator.Register(this);
 
-            //ICollectionView view = CollectionViewSource.GetDefaultView(new List<Reservation>());
-            //view.GroupDescriptions.Add(new PropertyGroupDescription("LocationId"));
-            //view.SortDescriptions.Add(new SortDescription("StartDate", ListSortDirection.Ascending));
-            //ReservationsOnDate = view;
-
-            //ReservationsOnDate = new ObservableCollection<Reservation>();
+            // show reservations of today
             SelectedDate = DateTime.Now;
         }
 
@@ -63,39 +60,32 @@ namespace UserInteface.ViewModels
                 return;
 
             List<Reservation> reservations = ReservationDB.GetAllOnDate(SelectedDate.Value);
-
-            System.Diagnostics.Debug.WriteLine("Found {0} reservations on {1}", reservations.Count, SelectedDate.Value);
-            //System.Windows.MessageBox.Show("Test get reservations " + reservations.Count(), "test test");
-
             ReservationsOnDate = new ObservableCollection<Reservation>(reservations);
-            //ReservationsOnDate = CollectionViewSource.GetDefaultView(reservations);
+            System.Diagnostics.Debug.WriteLine(
+                String.Format("Found {0} reservations on {1}", reservations.Count, SelectedDate.Value),
+                "ReservationCalendarVM"
+            );
         }
 
         private void CreateCommands()
         {
             AddCommand = new DelegateCommand(execute: (obj) =>
             {
-                System.Diagnostics.Debug.WriteLine("Add a new reservation on {0}", SelectedDate.Value);
-
                 Reservation reservation = new Reservation();
                 reservation.StartDate = SelectedDate.Value.AddHours(8);
                 reservation.EndDate = SelectedDate.Value.AddHours(9);
 
-                INavigationService navigator = new NavigationService();
-                navigator.Navigate<ReservationEditViewModel>(reservation);
+                Navigator.Navigate<ReservationEditViewModel>(reservation);
             },
                 canExecute: (obj) => { return SelectedDate.HasValue; }
             );
         }
 
-        #region INotifyPropertyChanged
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged(string propertyName)
+        [MediatorMessageSink(MediatorMessages.ReservationEdit, ParameterType = typeof(string))]
+        private void UpdateReservations(string parameter)
         {
-            PropertyChangedEventHandler handler = PropertyChanged;
-            if (handler != null)
-                handler(this, new PropertyChangedEventArgs(propertyName));
+            GetReservationsForSelectedDate();
         }
-        #endregion INotifyPropertyChanged
+
     }
 }

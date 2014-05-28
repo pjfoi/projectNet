@@ -23,19 +23,20 @@ namespace UserInteface.ViewModels
         ) {
             Mediator.Register(this);
 
+            #region AddContractCommand
             AddContractCommand = new DelegateCommand(execute: (obj) =>
             {
                 Contract contract = new Contract();
                 contract.Company = (Company)SelectedItems[0];
                 contract.CompanyId = contract.Company.Id;
 
-                INavigationService navigator = new NavigationService();
-                navigator.Navigate<ContractEditViewModel>(contract);
+                Navigator.Navigate<ContractEditViewModel>(contract);
             },
                 canExecute: (obj) => { return IsOneItemSelected(); }
             );
 
             Commands.Add(AddContractCommand);
+            #endregion AddContractCommand
         }
 
         public DelegateCommand AddContractCommand

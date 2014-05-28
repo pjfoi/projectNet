@@ -8,7 +8,7 @@ namespace UserInteface.ViewModels
     {
         public ReservationOverviewViewModel() : base(
             name: "reservatie",
-            getItems: () => ReservationDB.GetAll(),//ReservationDB.GetFromCompany(CompanyDB.GetById(2)),
+            getItems: () => ReservationDB.GetAll(),
             deleteItems: (reservations) => ReservationDB.Delete(reservations),
             editItem: (reservation) =>
             {

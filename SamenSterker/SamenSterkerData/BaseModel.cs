@@ -16,8 +16,6 @@ namespace SamenSterkerData
 
         protected void UpdateValidationErrors(string propertyKey, ICollection<string> validationErrors)
         {
-            System.Diagnostics.Debug.WriteLine("update validation errors for " + propertyKey, "BaseModel");
-
             // unvalid -> add errors
             if (validationErrors != null && validationErrors.Count > 0)
             {

@@ -112,5 +112,15 @@ namespace UserInteface.Lib
         {
             NavigationCommands.BrowseBack.Execute(null, null);
         }
+
+
+        // added myself
+        public static T GetParameter<T>(FirstFloor.ModernUI.Windows.Navigation.NavigationEventArgs e) where T: class
+        {
+            // cheating (need an absolute path)
+            Uri source = new Uri(new Uri("http://example.com"), e.Source);
+            string jsonParam = System.Web.HttpUtility.ParseQueryString(source.Query).Get("param");
+            return jsonParam == null ? default(T) : JsonConvert.DeserializeObject<T>(jsonParam);
+        }
     }
 }

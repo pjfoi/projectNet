@@ -88,8 +88,6 @@ namespace SamenSterkerData
 
         public void ValidateEmailAddress(string email)
         {
-            System.Diagnostics.Debug.WriteLine("Validate email " + email, "Company");
-
             // source regex : http://stackoverflow.com/a/6893571
             string regex = @"^[\w!#$%&'*+\-/=?\^_`{|}~]+(\.[\w!#$%&'*+\-/=?\^_`{|}~]+)*"
                            + "@"

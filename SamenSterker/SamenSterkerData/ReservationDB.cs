@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SamenSterkerData.Exceptions;
+using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
@@ -137,6 +138,100 @@ namespace SamenSterkerData
                         return 0;
                     }
                 }
+            }
+        }
+
+        public static bool IsReservationPossible(Reservation reservation)
+        {
+            // a contract exists for the time of the reservation
+            Contract contract = ContractDB.GetContractForReservation(reservation);
+            if (contract == null)
+            {
+                throw new InvalidReservationException(
+                    "Uw bedrijf heeft op dat moment geen geldig contract"
+                );
+            }
+
+            using (SqlConnection connection = SamenSterkerDB.GetConnection())
+            {
+                // the selected location is free for the selected time
+                if (! IsLocationFree(reservation, connection))
+                {
+                    throw new LocationOccupiedException(
+                        "De gekozen locatie is niet vrij tijdens de gekozen periode"
+                    );
+                }
+
+                // is the limit of the contract formula not exceeded 
+                int limit = contract.Formula.MaxUsageHoursPerPeriod;
+                if (contract.Formula.MaxUsageHoursPerPeriod > 0)
+                {
+                    TimeSpan timeUsed = new TimeSpan(0, GetMinutesUsedOfContract(contract, connection), 0);
+                    TimeSpan timeLeft = new TimeSpan(limit, 0, 0).Subtract(timeUsed);
+                    TimeSpan timeReservation = reservation.EndDate.Subtract(reservation.StartDate);
+                    if (timeReservation > timeLeft)
+                    {
+                        throw new InvalidReservationException(
+                            String.Format("De reservatie past niet meer binnen de limiet van uw contract.\n" +
+                                          "U hebt {0} uren en {1} minuten over.", timeLeft.Hours, timeLeft.Minutes)
+                        );
+                    }
+                }
+
+            }
+
+            return true;
+        }
+
+        private static bool IsLocationFree(Reservation reservation, SqlConnection connection)
+        {
+            const string selectConflictingReservations =
+                @"SELECT COUNT(*) FROM Reservation
+                  WHERE LocationId = @LocationId
+                    AND (@StartDate BETWEEN StartDate AND EndDate
+                        OR @EndDate BETWEEN StartDate And EndDate)";
+                  //AND Id != @Id // for updating a reservation ??
+            int nbConflicts = connection.Query<int>(
+                selectConflictingReservations, reservation
+            ).Single();
+            return nbConflicts == 0;
+        }
+
+        private static int GetMinutesUsedOfContract(
+            Contract contract, SqlConnection connection)
+        {
+            const string selectTotalMinutes =
+                @"SELECT SUM( DATEDIFF(mi, r.StartDate, r.EndDate) )
+                  FROM Reservations r
+                  WHERE r.CompanyId = @CompanyId
+                    AND r.StartDate BETWEEN @StartDate AND @EndDate
+                    AND r.EndDate BETWEEN @StartDate AND @EndDate";
+                //AND Id != @ReservationId // for updating a reservation ??
+            int nbMinutes = connection.Query<int>(
+                selectTotalMinutes, contract
+            ).Single();
+            return nbMinutes;
+        }
+
+        public static bool ExistsReservationOfContract(Contract contract)
+        {
+            const string reservationExistsQuery =
+                @"SELECT CAsT(
+                    CASE WHEN ( EXISTS(
+                      SELECT r.* FROM Reservation r
+                      WHERE r.CompanyId = @CompanyId
+                        AND (r.StartDate > SYSDATETIME()
+                            OR r.EndDate > SYSDATETIME())
+                        AND r.StartDate BETWEEN @StartDate AND @EndDate
+                        AND r.EndDate BETWEEN @StartDate AND @EndDate
+                    )) THEN 1 ELSE 0 END
+                  AS BIT)";
+
+            using (SqlConnection connection = SamenSterkerDB.GetConnection())
+            {
+                return connection.Query<bool>(
+                    reservationExistsQuery, contract
+                ).Single();
             }
         }
 

@@ -1,8 +1,7 @@
 ﻿using FirstFloor.ModernUI.Windows;
-using Newtonsoft.Json;
 using SamenSterkerData;
-using System;
 using System.Windows.Controls;
+using UserInteface.Lib;
 using UserInteface.ViewModels;
 
 namespace UserInteface.Pages
@@ -23,20 +22,13 @@ namespace UserInteface.Pages
 
         public void OnNavigatedTo(FirstFloor.ModernUI.Windows.Navigation.NavigationEventArgs e)
         {
-            CompanyEditViewModel vm = ((CompanyEditViewModel)this.DataContext);
-            // cheating (need an absolute path)
-            Uri source = new Uri(new Uri("http://example.com"), e.Source);
-            // get contract from url 
-            string jsonParam = System.Web.HttpUtility.ParseQueryString(source.Query).Get("param");
-
-            if (jsonParam != null)
+            Company company = NavigationService.GetParameter<Company>(e);
+            CompanyEditViewModel vm = (CompanyEditViewModel) this.DataContext;
+            if (company != null)
             {
-                Company company = JsonConvert.DeserializeObject<Company>(jsonParam);
-
-                // show the passed company for editting
                 vm.ShowCompany(company);
             }
-            else 
+            else
             {
                 vm.ShowCompany();
             }

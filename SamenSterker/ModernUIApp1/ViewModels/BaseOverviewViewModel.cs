@@ -16,6 +16,7 @@ namespace UserInteface.ViewModels
             get { return items; }
             private set {
                 items = value;
+                OnPropertyChanged("Items");
             }
         }
 
@@ -57,6 +58,8 @@ namespace UserInteface.ViewModels
             get { return getItems; }
             set { getItems = value; }
         }
+
+        private string nameItems;
         #endregion Properties
 
         public BaseOverviewViewModel(
@@ -68,6 +71,7 @@ namespace UserInteface.ViewModels
         {
             //this.items = new ObservableCollection<T>(items);
             GetItems = getItems;
+            nameItems = name;
 
             #region DeleteCommand
             DeleteCommand = new DelegateCommand(execute: (obj) =>
@@ -113,7 +117,15 @@ namespace UserInteface.ViewModels
 
         public void Refresh()
         {
+            System.Diagnostics.Debug.WriteLine(
+                String.Format("Nb {0} before refresh {1}", nameItems, Items == null ? 0 : Items.Count),
+                "BaseOverviewVM"
+            );
             Items = new ObservableCollection<T>(GetItems());
+            System.Diagnostics.Debug.WriteLine(
+                String.Format("Nb {0} after refresh {1}", nameItems, Items.Count),
+                "BaseOverviewVM"
+            );
         }
 
         protected bool IsOneItemSelected()

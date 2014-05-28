@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SamenSterkerData.Exceptions;
+using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
@@ -21,10 +22,10 @@ namespace SamenSterkerData
             VALUES (@Number, @StartDate, @EndDate, @CompanyId, @ContractFormulaId)";
 
         private static readonly string updateCommand =
-            @"UPDATE Company 
+            @"UPDATE Contract 
             SET Number = @Number, StartDate = @StartDate, EndDate = @EndDate, 
                 CompanyId = @CompanyId, ContractFormulaId = @ContractFormulaId
-            WHERE Id = @Id,";
+            WHERE Id = @Id";
 
         private static readonly string deleteQuery =
             "DELETE FROM Contract WHERE Id = @Id";
@@ -84,6 +85,13 @@ namespace SamenSterkerData
 
             using (SqlConnection connection = SamenSterkerDB.GetConnection())
             {
+                if(ExistsConflictingContract(contract, connection))
+                {
+                    throw new InvalidContractException(
+                        "Er bestaat al een contract tijdens de geselecteerde periode."
+                    );
+                }
+
                 int rowsAffected = connection.Execute(
                     sql: isNew(contract) ? insertCommand : updateCommand,
                     param: contract
@@ -91,6 +99,22 @@ namespace SamenSterkerData
                 //SetIdentity<int>(connection, id => subCategory.Id = id);
                 return rowsAffected;
             }
+        }
+
+        private static bool ExistsConflictingContract(Contract contract, SqlConnection connection)
+        {
+            const string contractExistsQuery =
+                @"SELECT CAsT(
+                    CASE WHEN ( EXISTS(
+                      SELECT ct.* FROM Contract ct
+                      WHERE ct.Id != @Id
+                        AND ct.StartDate BETWEEN @StartDate AND @EndDate
+                        AND ct.EndDate BETWEEN @StartDate AND @EndDate
+                    )) THEN 1 ELSE 0 END
+                  AS BIT)";
+            return connection.Query<bool>(
+                contractExistsQuery, contract
+            ).Single();
         }
 
         private static bool isNew(Contract contract)
@@ -130,6 +154,22 @@ namespace SamenSterkerData
                         return 0;
                     }
                 }
+            }
+        }
+
+        internal static Contract GetContractForReservation(Reservation reservation)
+        {
+            string selectContractExists = 
+                selectAllQuery + 
+                @"WHERE ct.CompanyId = @CompanyId
+                    AND @StartDate BETWEEN ct.StartDate AND ct.EndDate
+                    AND @EndDate BETWEEN ct.StartDate And ct.EndDate";
+
+            using (SqlConnection connection = SamenSterkerDB.GetConnection())
+            {
+                return connection.Query<Contract, Company, ContractFormula, Contract>(
+                   selectContractExists, Mapper, reservation
+               ).SingleOrDefault();
             }
         }
 
