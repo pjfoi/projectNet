@@ -101,13 +101,34 @@ namespace SamenSterkerData
             }
         }
 
-        private static bool ExistsConflictingContract(Contract contract, SqlConnection connection)
+        public static int Stop(Contract contract)
+        {
+            if (ReservationDB.ExistsReservationOfContract(contract))
+            {
+                throw new InvalidContractException(
+                    "Er bestaan nog reservaties voor het einde van het huidige contract"
+                );
+            }
+
+            if (contract.Formula == null)
+            {
+                contract = GetById(contract.Id);
+            }
+
+            contract.EndDate = DateTime.Now.Date.AddMonths(
+                contract.Formula.NoticePeriodInMonths);
+            return Save(contract);
+        }
+
+        private static bool ExistsConflictingContract(
+            Contract contract, SqlConnection connection)
         {
             const string contractExistsQuery =
                 @"SELECT CAsT(
                     CASE WHEN ( EXISTS(
                       SELECT ct.* FROM Contract ct
                       WHERE ct.Id != @Id
+                        AND ct.CompanyId = @CompanyId
                         AND ct.StartDate BETWEEN @StartDate AND @EndDate
                         AND ct.EndDate BETWEEN @StartDate AND @EndDate
                     )) THEN 1 ELSE 0 END

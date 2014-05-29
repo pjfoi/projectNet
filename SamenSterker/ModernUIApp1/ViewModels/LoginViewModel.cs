@@ -4,7 +4,7 @@ using UserInteface.Lib;
 
 namespace UserInteface.ViewModels
 {
-    public class LoginViewModel
+    public class LoginViewModel : BaseViewModel
     {
         #region Properties
         private string username;
@@ -14,6 +14,7 @@ namespace UserInteface.ViewModels
             set 
             { 
                 username = value;
+                OnPropertyChanged("Username");
                 LoginCommand.RaiseCanExecuteChanged();
             }
         }
@@ -43,16 +44,6 @@ namespace UserInteface.ViewModels
                             String.Format("Welkom {0}!", auth.Username),
                             "Succes", System.Windows.MessageBoxButton.OK
                         );
-
-                        //System.Diagnostics.Debug.WriteLine(
-                        //    String.Format("{0} is admin : {1} is client {2}",
-                        //                  auth.Username,
-                        //                  Roles.IsUserInRole(auth.Username, "admin"),
-                        //                  Roles.IsUserInRole(auth.Username, "client")
-                        //    ),
-                        //    "App"
-                        //);
-
                     }
                     else
                     {

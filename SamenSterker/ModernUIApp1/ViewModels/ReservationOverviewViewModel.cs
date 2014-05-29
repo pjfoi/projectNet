@@ -1,41 +1,41 @@
 ﻿using MediatorLib;
 using SamenSterkerData;
+using System.Collections.Generic;
 using UserInteface.Lib;
 
 namespace UserInteface.ViewModels
 {
     public class ReservationOverviewViewModel : BaseOverviewViewModel<Reservation>
     {
-        public ReservationOverviewViewModel() : base(
-            name: "reservatie",
-            getItems: () => ReservationDB.GetAll(),
-            deleteItems: (reservations) => ReservationDB.Delete(reservations),
-            editItem: (reservation) =>
-            {
-                GetNavigator().Navigate<ReservationEditViewModel>(reservation);
-            }
-        ) {
+        public ReservationOverviewViewModel() : base("reservatie") 
+        {
             Mediator.Register(this);
-        }
-
-        [MediatorMessageSink(MediatorMessages.LoginAdmin, ParameterType = typeof(User))]
-        private void ShowAllReservations(User user)
-        {
-            GetItems = () => ReservationDB.GetAll();
-            Refresh();
-        }
-
-        [MediatorMessageSink(MediatorMessages.LoginClient, ParameterType = typeof(User))]
-        private void ShowUserCompanyReservations(User user)
-        {
-            GetItems = () => ReservationDB.GetFromCompany(user.Company);
-            Refresh();
         }
 
         [MediatorMessageSink(MediatorMessages.ReservationEdit, ParameterType = typeof(string))]
         private void UpdateReservations(string parameter)
         {
             Refresh();
+        }
+
+        protected override void EditItem(Reservation reservation)
+        {
+            Navigator.Navigate<ReservationEditViewModel>(reservation);
+        }
+
+        protected override void DeleteItems(IEnumerable<Reservation> reservations)
+        {
+            ReservationDB.Delete(reservations);
+        }
+
+        protected override IEnumerable<Reservation> GetAdminItems(User user)
+        {
+            return ReservationDB.GetAll();
+        }
+
+        protected override IEnumerable<Reservation> GetClientItems(User user)
+        {
+            return ReservationDB.GetFromCompany(user.Company);
         }
     }
 }

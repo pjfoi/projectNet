@@ -101,6 +101,9 @@
     </Compile>
     <Compile Include="Lib\Auth.cs" />
     <Compile Include="Lib\BoolToGridRowHeightConverter.cs" />
+    <Compile Include="Pages\Logout.xaml.cs">
+      <DependentUpon>Logout.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\ReservationCalendar.xaml.cs">
       <DependentUpon>ReservationCalendar.xaml</DependentUpon>
     </Compile>
@@ -163,6 +166,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\Login.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Logout.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

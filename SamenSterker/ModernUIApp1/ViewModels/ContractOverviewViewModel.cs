@@ -1,52 +1,58 @@
 ﻿using MediatorLib;
 using SamenSterkerData;
+using SamenSterkerData.Exceptions;
 using System;
+using System.Collections.Generic;
 using UserInteface.Lib;
 
 namespace UserInteface.ViewModels
 {
     public class ContractOverviewViewModel : BaseOverviewViewModel<Contract>
     {
-        public ContractOverviewViewModel() : base(
-            name: "contract",
-            getItems: () => ContractDB.GetAll(),
-            deleteItems: (contracts) => ContractDB.Delete(contracts),
-            editItem: (contract) =>
-            {
-                GetNavigator().Navigate<ContractEditViewModel>(contract);
-            }
-        )
+        #region Properties
+        public DelegateCommand StopCommand
+        {
+            get;
+            internal set;
+        }
+        #endregion Properties
+
+        public ContractOverviewViewModel() : base("contract")
         {
             Mediator.Register(this);
+            CreateStopCommand();
 
-            #region StopCommand
+        }
+
+        private void CreateStopCommand()
+        {
             StopCommand = new DelegateCommand(execute: (obj) =>
+            {
+                Contract contract = GetFirstSelectedItem();
+
+                try
                 {
-                    Contract contract = (Contract) SelectedItems[0];
-
-                    if (ReservationDB.ExistsReservationOfContract(contract))
-                    {
-                        Xceed.Wpf.Toolkit.MessageBox.Show(
-                            "Er bestaan nog reservaties voor het einde van het huidige contract",
-                            "Mislukt", System.Windows.MessageBoxButton.OK
-                        );
-                        return;
-                    }
-
+                    ContractDB.Stop(contract);
+                    Mediator.NotifyColleagues<string>(MediatorMessages.ContractEdit, "");
                     Xceed.Wpf.Toolkit.MessageBox.Show(
                         "Contract gestopt", "Succes", System.Windows.MessageBoxButton.OK
                     );
-
-                },
-                canExecute: (obj) => {
-                    return IsOneItemSelected() 
+                }
+                catch (InvalidContractException exception)
+                {
+                    Xceed.Wpf.Toolkit.MessageBox.Show(
+                        exception.Message, "Mislukt", System.Windows.MessageBoxButton.OK
+                    );
+                }
+            },
+            canExecute: (obj) =>
+                {
+                    return IsOneItemSelected()
                         && CanContractBeStopped((Contract)SelectedItems[0]);
                 }
             );
 
             Commands.Add(StopCommand);
-            #endregion StopCommand
-
         }
 
         private bool CanContractBeStopped(Contract contract)
@@ -59,24 +65,24 @@ namespace UserInteface.ViewModels
                 && (possibleNewEndDate < contract.EndDate);
         }
 
-        public DelegateCommand StopCommand
+        protected override void EditItem(Contract contract)
         {
-            get;
-            internal set;
+            Navigator.Navigate<ContractEditViewModel>(contract);
         }
 
-        [MediatorMessageSink(MediatorMessages.LoginAdmin, ParameterType = typeof(User))]
-        private void ShowAllContracts(User user)
+        protected override void DeleteItems(IEnumerable<Contract> contracts)
         {
-            GetItems = () => ContractDB.GetAll();
-            Refresh();
+            ContractDB.Delete(contracts);
         }
 
-        [MediatorMessageSink(MediatorMessages.LoginClient, ParameterType = typeof(User))]
-        private void ShowUserCompanyContracts(User user)
+        protected override IEnumerable<Contract> GetAdminItems(User user)
         {
-            GetItems = () => ContractDB.GetFromCompany(user.Company);
-            Refresh();
+            return ContractDB.GetAll();
+        }
+
+        protected override IEnumerable<Contract> GetClientItems(User user)
+        {
+            return ContractDB.GetFromCompany(user.Company);
         }
 
         [MediatorMessageSink(MediatorMessages.ContractEdit, ParameterType = typeof(string))]

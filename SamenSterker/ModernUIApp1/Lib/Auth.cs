@@ -1,6 +1,5 @@
 ﻿using MediatorLib;
 using SamenSterkerData;
-using System;
 using System.ComponentModel;
 using System.Web.Security;
 using WebMatrix.WebData;
@@ -97,7 +96,7 @@ namespace UserInteface.Lib
                 Roles.AddUsersToRole(new string[] { "involved", "cronos" }, "client");
         }
 
-        public bool Login(String username, String password)
+        public bool Login(string username, string password)
         {
             bool succes = false;
             if (System.Web.Security.Membership.ValidateUser(username, password))
@@ -111,7 +110,10 @@ namespace UserInteface.Lib
         public void Logout()
         {
             Username = "";
-            Mediator.NotifyColleagues<String>(MediatorMessages.Logout);
+            User = null;
+            IsAdmin = false;
+            isClient = false;
+            Mediator.NotifyColleagues<string>(MediatorMessages.Logout, "");
         }
 
         private void UpdateCurrentUser(string username)

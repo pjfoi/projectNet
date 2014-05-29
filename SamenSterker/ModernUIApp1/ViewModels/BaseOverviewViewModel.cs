@@ -1,4 +1,6 @@
-﻿using System;
+﻿using MediatorLib;
+using SamenSterkerData;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -52,8 +54,8 @@ namespace UserInteface.ViewModels
             set { commands = value; }
         }
 
-        private Func<IEnumerable<T>> getItems;
-        protected Func<IEnumerable<T>> GetItems
+        private Func<User, IEnumerable<T>> getItems;
+        protected Func<User, IEnumerable<T>> GetItems
         {
             get { return getItems; }
             set { getItems = value; }
@@ -62,31 +64,43 @@ namespace UserInteface.ViewModels
         private string nameItems;
         #endregion Properties
 
-        public BaseOverviewViewModel(
-            string name,
-            Func<IEnumerable<T>> getItems,
-            Action<IEnumerable<T>> deleteItems,
-            Action<T> editItem
-        )
+        public BaseOverviewViewModel(string name)
         {
-            //this.items = new ObservableCollection<T>(items);
-            GetItems = getItems;
             nameItems = name;
+            Commands = new List<DelegateCommand>();
+            CreateDeleteCommand();
+            CreateEditCommand();
 
-            #region DeleteCommand
+            Mediator.Register(MediatorMessages.LoginAdmin, (Action<User>)
+                delegate(User user)
+                {
+                    GetItems = GetAdminItems;
+                    Refresh();
+                });
+
+            Mediator.Register(MediatorMessages.LoginClient, (Action<User>)
+                delegate(User user) 
+                {
+                    GetItems = GetClientItems;
+                    Refresh();
+                });
+        }
+
+        private void CreateDeleteCommand()
+        {
             DeleteCommand = new DelegateCommand(execute: (obj) =>
             {
                 MessageBoxResult result = Xceed.Wpf.Toolkit.MessageBox.Show(
-                   String.Format("Wilt u {0} {1}(s) verwijderen?", SelectedItems.Count, name),
+                   String.Format("Wilt u {0} {1}(s) verwijderen?", SelectedItems.Count, nameItems),
                    "Bevestig Verwijdering", MessageBoxButton.YesNoCancel, MessageBoxImage.Question
                 );
 
                 if (result == MessageBoxResult.Yes)
                 {
-                    IEnumerable<T> itemsToBeDeleted = SelectedItems.Cast<T>();
+                    IEnumerable<T> itemsToBeDeleted = GetSelectedItems();
 
                     // delete from DB
-                    deleteItems(itemsToBeDeleted);
+                    DeleteItems(itemsToBeDeleted);
 
                     // delete from UI
                     // reverse list to make deleting possible
@@ -98,21 +112,28 @@ namespace UserInteface.ViewModels
             },
                 canExecute: (obj) => { return AreMultipleItemsSelected(); }
             );
-            #endregion DeleteCommand
+            Commands.Add(DeleteCommand);
+        }
 
-            #region EditCommand
+        private void CreateEditCommand()
+        {
             EditCommand = new DelegateCommand(execute: (obj) =>
             {
-                T item = (T)SelectedItems[0];
-                editItem(item);
+                EditItem(GetFirstSelectedItem());
             },
                 canExecute: (obj) => { return IsOneItemSelected(); }
             );
-            #endregion EditCommand
-
-            Commands = new List<DelegateCommand>();
-            Commands.Add(DeleteCommand);
             Commands.Add(EditCommand);
+        }
+
+        protected T GetFirstSelectedItem()
+        {
+            return (T)SelectedItems[0];
+        }
+
+        protected IEnumerable<T> GetSelectedItems()
+        {
+            return SelectedItems.Cast<T>();
         }
 
         public void Refresh()
@@ -121,7 +142,8 @@ namespace UserInteface.ViewModels
                 String.Format("Nb {0} before refresh {1}", nameItems, Items == null ? 0 : Items.Count),
                 "BaseOverviewVM"
             );
-            Items = new ObservableCollection<T>(GetItems());
+            User user = ((App) App.Current).Auth.User;
+            Items = new ObservableCollection<T>(GetItems(user));
             System.Diagnostics.Debug.WriteLine(
                 String.Format("Nb {0} after refresh {1}", nameItems, Items.Count),
                 "BaseOverviewVM"
@@ -137,5 +159,14 @@ namespace UserInteface.ViewModels
         {
             return SelectedItems != null && SelectedItems.Count > 0;
         }
+
+        abstract protected void EditItem(T item);
+
+        abstract protected void DeleteItems(IEnumerable<T> items);
+
+        abstract protected IEnumerable<T> GetAdminItems(User user);
+
+        abstract protected IEnumerable<T> GetClientItems(User user);
+
     }
 }

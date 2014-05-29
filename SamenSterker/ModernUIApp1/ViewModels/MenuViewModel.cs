@@ -32,7 +32,7 @@ namespace UserInteface.ViewModels
         private void SetClientMenu(User user)
         {
             this.MenuLinkGroups.Clear();
-            AddHomeGroup();
+            AddLoggedInHomeGroup();
             AddSettingsGroup();
             AddContractGroup();
             AddReservationGroup();
@@ -43,11 +43,17 @@ namespace UserInteface.ViewModels
         {
             System.Diagnostics.Debug.WriteLine("update admin menu", "MenuViewModel");
             this.MenuLinkGroups.Clear();
-            AddHomeGroup();
+            AddLoggedInHomeGroup();
             AddSettingsGroup();
             AddCompanyGroup();
             AddContractGroup();
             AddReservationGroup();
+        }
+
+        [MediatorMessageSink(MediatorMessages.Logout, ParameterType = typeof(string))]
+        private void SetLogout(string parameter)
+        {
+            SetDefaultMenu();
         }
 
         private void AddHomeGroup() 
@@ -55,6 +61,14 @@ namespace UserInteface.ViewModels
             LinkGroup homeGroup = new LinkGroup { DisplayName = "Welcome" };
             homeGroup.Links.Add(CreateLink("home", "../Pages/Home.xaml"));
             homeGroup.Links.Add(CreateLink("login", "../Pages/Login.xaml"));
+            MenuLinkGroups.Add(homeGroup);
+        }
+
+        private void AddLoggedInHomeGroup()
+        {
+            LinkGroup homeGroup = new LinkGroup { DisplayName = "Welcome" };
+            homeGroup.Links.Add(CreateLink("home", "../Pages/Home.xaml"));
+            homeGroup.Links.Add(CreateLink("logout", "../Pages/Logout.xaml"));
             MenuLinkGroups.Add(homeGroup);
         }
 

@@ -13,21 +13,25 @@ namespace UserInteface.ViewModels
 {
     public class CompanyOverviewViewModel  : BaseOverviewViewModel<Company>
     {
-        public CompanyOverviewViewModel() : base(
-            name: "reservatie",
-            getItems: () => CompanyDB.GetAll(),
-            deleteItems: (companies) => CompanyDB.Delete(companies),
-            editItem: (company) => {
-                GetNavigator().Navigate<CompanyEditViewModel>(company);
-            }
-        ) {
-            Mediator.Register(this);
+        #region Properties
+        public DelegateCommand AddContractCommand
+        {
+            get;
+            internal set;
+        }
+        #endregion Properties
 
-            #region AddContractCommand
+        public CompanyOverviewViewModel() : base("reservatie") {
+            Mediator.Register(this);
+            CreateAddContractCommand();
+        }
+
+        private void CreateAddContractCommand()
+        {
             AddContractCommand = new DelegateCommand(execute: (obj) =>
             {
                 Contract contract = new Contract();
-                contract.Company = (Company)SelectedItems[0];
+                contract.Company = GetFirstSelectedItem();
                 contract.CompanyId = contract.Company.Id;
 
                 Navigator.Navigate<ContractEditViewModel>(contract);
@@ -36,19 +40,26 @@ namespace UserInteface.ViewModels
             );
 
             Commands.Add(AddContractCommand);
-            #endregion AddContractCommand
         }
 
-        public DelegateCommand AddContractCommand
+        protected override void EditItem(Company company)
         {
-            get;
-            internal set;
+            Navigator.Navigate<CompanyEditViewModel>(company);
         }
 
-        [MediatorMessageSink(MediatorMessages.LoginAdmin, ParameterType = typeof(User))]
-        private void LoadCompanies(User user)
+        protected override void DeleteItems(IEnumerable<Company> companies)
         {
-            Refresh();
+            CompanyDB.Delete(companies);
+        }
+
+        protected override IEnumerable<Company> GetAdminItems(User user)
+        {
+            return CompanyDB.GetAll();
+        }
+
+        protected override IEnumerable<Company> GetClientItems(User user)
+        {
+            return Enumerable.Empty<Company>();
         }
 
         [MediatorMessageSink(MediatorMessages.ContractEdit, ParameterType = typeof(string))]
