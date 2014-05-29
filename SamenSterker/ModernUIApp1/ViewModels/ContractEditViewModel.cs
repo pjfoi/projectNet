@@ -1,19 +1,24 @@
-﻿using SamenSterkerData;
+﻿using MediatorLib;
+using SamenSterkerData;
 using SamenSterkerData.Exceptions;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UserInteface.Lib;
 
 namespace UserInteface.ViewModels
 {
+    /// <summary>
+    /// ContractEditViewModel : Create or edit a contract.
+    /// </summary>
     public class ContractEditViewModel : BaseViewModel
     {
         #region Properties
         private Contract contract;
+
+        /// <summary>
+        /// The contract which is edited or created.
+        /// </summary>
         public Contract Contract
         {
             get { return contract; }
@@ -25,19 +30,38 @@ namespace UserInteface.ViewModels
         }
 
         private IList<Company> companies;
+
+        /// <summary>
+        /// All the companies
+        /// </summary>
         public IList<Company> Companies
         {
             get { return companies; }
-            set { companies = value; }
+            set 
+            { 
+                companies = value;
+                OnPropertyChanged("Companies");
+            }
         }
 
         private IList<ContractFormula> formulas;
+
+        /// <summary>
+        /// All the contract formulas
+        /// </summary>
         public IList<ContractFormula> Formulas
         {
             get { return formulas; }
-            set { formulas = value; }
+            set 
+            { 
+                formulas = value;
+                OnPropertyChanged("Formulas");
+            }
         }
 
+        /// <summary>
+        /// Command to save the contract.
+        /// </summary>
         public DelegateCommand SaveCommand
         {
             get;
@@ -45,38 +69,36 @@ namespace UserInteface.ViewModels
         }
         #endregion Properties
 
+        /// <summary>
+        /// Create a new ContractEditViewModel
+        /// </summary>
         public ContractEditViewModel()
         {
-            CreateCommands();
-            Companies = CompanyDB.GetAll();
-            Formulas = ContractFormulaDB.GetAll().ToList<ContractFormula>();
-            ShowContract();
+            UpdateCompanies();
+            UpdateFormulas();
+            CreateSaveCommand();
+            Mediator.Register(this);
         }
 
-        private Contract CreateDefaultContract()
+        private void UpdateCompanies()
         {
-            Contract defaultContract = new Contract();
-            defaultContract.StartDate = DateTime.Now;
-            return defaultContract;
+            Companies = CompanyDB.GetAll();
         }
 
-        private void CreateCommands()
+        private void UpdateFormulas()
+        {
+            Formulas = ContractFormulaDB.GetAll().ToList<ContractFormula>();
+        }
+
+        private void CreateSaveCommand()
         {
             SaveCommand = new DelegateCommand(execute: (obj) =>
             {
-                // set company id if a client is logged in
-                Auth auth = ((App)App.Current).Auth;
-                if (auth.isClient)
-                {
-                    Contract.CompanyId = auth.User.CompanyId;
-                }
+                SetCompanyIdIfClient();
+                SetEndDateBasedOnFormula();
 
                 // check if all required fields have been filled in
-                int nbFieldsLeftOpen = NbRequiredFieldsOpen(
-                    Contract.CompanyId,
-                    Contract.ContractFormulaId,
-                    Contract.StartDate
-                );
+                int nbFieldsLeftOpen = GetNbRequiredFieldsLeftOpen();
                 if (nbFieldsLeftOpen > 0)
                 {
                     Xceed.Wpf.Toolkit.MessageBox.Show(
@@ -85,10 +107,6 @@ namespace UserInteface.ViewModels
                     );
                     return;
                 }
-
-                // sett end date based on selected contract formula
-                Contract.Formula = GetContractFormulaByIdLocal(Contract.ContractFormulaId);
-                Contract.EndDate = Contract.StartDate.AddMonths(Contract.Formula.PeriodInMonths);
 
                 // save the contract
                 try
@@ -111,19 +129,65 @@ namespace UserInteface.ViewModels
             });
         }
 
-        private ContractFormula GetContractFormulaByIdLocal(int id)
+        private void SetCompanyIdIfClient()
         {
-            return Formulas.FirstOrDefault((f) => f.Id == id);
+            Auth auth = ((App)App.Current).Auth;
+            if (auth.isClient)
+            {
+                Contract.CompanyId = auth.User.CompanyId;
+            }
         }
 
+        private void SetEndDateBasedOnFormula()
+        {
+            SetContractFormula();
+            Contract.EndDate = Contract.StartDate.AddMonths(
+                Contract.Formula.PeriodInMonths
+            );
+        }
+
+        private void SetContractFormula()
+        {
+            Contract.Formula = Formulas.FirstOrDefault(
+                (f) => f.Id == Contract.ContractFormulaId
+            );
+        }
+
+        private int GetNbRequiredFieldsLeftOpen()
+        {
+            return NbRequiredFieldsOpen(
+                Contract.CompanyId,
+                Contract.ContractFormulaId,
+                Contract.StartDate
+            );
+        }
+
+        /// <summary>
+        /// Show a default contract in the edit form.
+        /// </summary>
         public void ShowContract()
         {
             ShowContract(CreateDefaultContract());
         }
 
+        /// <summary>
+        /// Show the specified contract in the edit form.
+        /// </summary>
         public void ShowContract(Contract contract)
         {
             Contract = contract;
         }
+
+        private Contract CreateDefaultContract()
+        {
+            return new Contract() { StartDate = DateTime.Now }; ;
+        }
+
+        [MediatorMessageSink(MediatorMessages.CompanyEdit, ParameterType = typeof(string))]
+        private void UpdateCompanies(string parameter)
+        {
+            UpdateCompanies();
+        }
+
     }
 }

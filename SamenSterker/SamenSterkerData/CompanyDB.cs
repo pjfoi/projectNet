@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace SamenSterkerData
 {
+    /// <summary>
+    /// Database interactions for companies.
+    /// </summary>
     public class CompanyDB
     {
         private static readonly string selectAllQuery = 
@@ -27,6 +30,10 @@ namespace SamenSterkerData
         private static readonly string deleteQuery =
             "DELETE FROM Company WHERE Id = @Id";
 
+        /// <summary>
+        /// Get all companies.
+        /// </summary>
+        /// <returns>All companies.</returns>
         public static IList<Company> GetAll()
         {
             using (SqlConnection connection = SamenSterkerDB.GetConnection())
@@ -36,24 +43,34 @@ namespace SamenSterkerData
             }
         }
 
+        /// <summary>
+        /// Get the company with the specified company id.
+        /// </summary>
+        /// <param name="companyId">Id of the requested company</param>
+        /// <returns>The requested company if it exists</returns>
         public static Company GetById(int companyId)
         {
             using (SqlConnection connection = SamenSterkerDB.GetConnection())
             {
                 return connection.Query<Company>(
-                    selectAllQuery + " WHERE Id = @CompanyId",
-                    new { CompanyId = companyId }
+                    sql: selectAllQuery + " WHERE Id = @CompanyId",
+                    param: new { CompanyId = companyId }
                 ).SingleOrDefault();
             }
         }
 
+        /// <summary>
+        /// Save the specified company.
+        /// </summary>
+        /// <param name="company">The company to be saved.</param>
+        /// <returns>Number of affected rows.</returns>
         public static int Save(Company company)
         {
             using (SqlConnection connection = SamenSterkerDB.GetConnection())
             {        
                 int rowsAffected = connection.Execute(
-                    isNew(company) ? insertCommand : updateCommand, 
-                    company
+                    sql: isNew(company) ? insertCommand : updateCommand, 
+                    param: company
                 );
                 //SetIdentity<int>(connection, id => subCategory.Id = id);
                 return rowsAffected;
@@ -65,6 +82,11 @@ namespace SamenSterkerData
             return company.Id == 0;
         }
 
+        /// <summary>
+        /// Delete the specified company.
+        /// </summary>
+        /// <param name="company">The company to be deleted</param>
+        /// <returns>Number of affected rows.</returns>
         public static int Delete(Company company)
         {
             using (SqlConnection connection = SamenSterkerDB.GetConnection())
@@ -73,6 +95,11 @@ namespace SamenSterkerData
             }
         }
 
+        /// <summary>
+        /// Delete the specified companies.
+        /// </summary>
+        /// <param name="companies">The companies to be deleted.</param>
+        /// <returns>Number of affected rows.</returns>
         public static int Delete(IEnumerable<Company> companies)
         {
             using (SqlConnection connection = SamenSterkerDB.GetConnection())

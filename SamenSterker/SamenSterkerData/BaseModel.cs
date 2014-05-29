@@ -7,10 +7,12 @@ using System.Threading.Tasks;
 
 namespace SamenSterkerData
 {
+    /// <summary>
+    /// Base Model implementing INotifyDataErrorInfo for validation
+    /// purposes.
+    /// </summary>
     public abstract class BaseModel : INotifyDataErrorInfo
     {
-
-
         #region INotifyDataErrorInfo members
         // source : http://social.technet.microsoft.com/wiki/contents/articles/19490.validating-data-in-wpf-4-5-using-the-inotifyerrordataerror-interface.aspx
 

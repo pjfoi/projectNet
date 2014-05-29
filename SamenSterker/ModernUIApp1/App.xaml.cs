@@ -1,11 +1,4 @@
 ﻿using MediatorLib;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace UserInteface
@@ -15,26 +8,18 @@ namespace UserInteface
     /// </summary>
     public partial class App : Application
     {
-
+        /// <summary>
+        /// Initialize the application
+        /// </summary>
         public App()
         {
-            //UserInteface.Lib.Auth.Initialize();
-
-            //Auth = new UserInteface.Lib.Auth();
-            //System.Diagnostics.Debug.WriteLine("Created Auth", "App");
-        }
-
-        protected override void OnStartup(StartupEventArgs e)
-        {
             UserInteface.Lib.Auth.Initialize();
-
             Auth = new UserInteface.Lib.Auth();
-            System.Diagnostics.Debug.WriteLine("Created Auth", "App");
-
-            base.OnStartup(e);
         }
 
-
+        /// <summary>
+        /// Auth object of this application
+        /// </summary>
         public UserInteface.Lib.Auth Auth
         {
             get;
@@ -43,6 +28,9 @@ namespace UserInteface
 
         private static readonly Mediator mediator = new Mediator();
 
+        /// <summary>
+        /// Mediator object of this application
+        /// </summary>
         public Mediator Mediator
         {
             get { return mediator;  }

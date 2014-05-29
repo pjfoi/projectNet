@@ -1,60 +1,78 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SamenSterkerData
 {
+    /// <summary>
+    /// A Contract Formula Model.
+    /// </summary>
     public class ContractFormula
     {
         private int id;
+        private string description;
+        private int maxUsageHoursPerPeriod;
+        private int periodInMonths;
+        private int noticePeriodInMonths;
+        private float price;
 
+        /// <summary>
+        /// The id of the contract formula.
+        /// </summary>
         public int Id
         {
             get { return id; }
             set { id = value; }
         }
-        private string description;
 
+        /// <summary>
+        /// The description of the contract formula.
+        /// </summary>
         public string Description
         {
             get { return description; }
             set { description = value; }
         }
-        private int maxUsageHoursPerPeriod;
 
+        /// <summary>
+        /// The maximum hours which can be used in the period of the 
+        /// contract with the contract formula.
+        /// </summary>
         public int MaxUsageHoursPerPeriod
         {
             get { return maxUsageHoursPerPeriod; }
             set { maxUsageHoursPerPeriod = value; }
         }
-        private int periodInMonths;
 
+        /// <summary>
+        /// The period of a contract with the contract formula.
+        /// </summary>
         public int PeriodInMonths
         {
             get { return periodInMonths; }
             set { periodInMonths = value; }
         }
-        private int noticePeriodInMonths;
 
+        /// <summary>
+        /// The notice period of a contract with the contract formula.
+        /// </summary>
         public int NoticePeriodInMonths
         {
             get { return noticePeriodInMonths; }
             set { noticePeriodInMonths = value; }
         }
-        private float price;
 
+        /// <summary>
+        /// The price of a contract with the contract formula.
+        /// </summary>
         public float Price
         {
             get { return price; }
             set { price = value; }
         }
 
-        public ContractFormula()
-        {
-        }
-
+        /// <summary>
+        /// Get a textual representation of the contract formula.
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return String.Format("{0} (id {1})", Description, Id);

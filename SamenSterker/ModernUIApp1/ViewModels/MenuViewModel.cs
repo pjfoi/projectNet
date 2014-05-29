@@ -2,16 +2,18 @@
 using MediatorLib;
 using SamenSterkerData;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UserInteface.Lib;
 
 namespace UserInteface.ViewModels
 {
+    /// <summary>
+    /// MenuViewModel to adapt the menu based on the logged in user.
+    /// </summary>
     public class MenuViewModel : BaseViewModel
     {
+        /// <summary>
+        /// Create a new MenuViewModel
+        /// </summary>
         public MenuViewModel()
         {
             Mediator.Register(this);
@@ -19,7 +21,15 @@ namespace UserInteface.ViewModels
             MenuLinkGroups = new LinkGroupCollection();
             SetDefaultMenu();
         }
-        public LinkGroupCollection MenuLinkGroups{ get; private set; }
+
+        /// <summary>
+        /// Linkgroups for the menu.
+        /// </summary>
+        public LinkGroupCollection MenuLinkGroups
+        { 
+            get;
+            private set;
+        }
 
         private void SetDefaultMenu()
         {
@@ -41,7 +51,6 @@ namespace UserInteface.ViewModels
         [MediatorMessageSink(MediatorMessages.LoginAdmin, ParameterType = typeof(User))]
         private void SetAdminMenu(User user)
         {
-            System.Diagnostics.Debug.WriteLine("update admin menu", "MenuViewModel");
             this.MenuLinkGroups.Clear();
             AddLoggedInHomeGroup();
             AddSettingsGroup();

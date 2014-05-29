@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Interactivity;
@@ -14,8 +9,9 @@ namespace UserInteface.Lib
     public class BindableSelectedItems : Behavior<DataGrid>
     {
         public static readonly DependencyProperty SelectedItemsProperty =
-            DependencyProperty.Register("SelectedItems", typeof(IList), 
-                typeof(BindableSelectedItems), new PropertyMetadata(default(IList), OnSelectedItemsChanged));
+            DependencyProperty.Register("SelectedItems", 
+                typeof(IList), typeof(BindableSelectedItems),
+                new PropertyMetadata(default(IList), OnSelectedItemsChanged));
 
         private static void OnSelectedItemsChanged(DependencyObject sender,
             DependencyPropertyChangedEventArgs args)

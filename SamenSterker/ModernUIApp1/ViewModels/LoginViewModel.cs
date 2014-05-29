@@ -1,13 +1,19 @@
 ﻿using System;
-using System.Web.Security;
 using UserInteface.Lib;
 
 namespace UserInteface.ViewModels
 {
+    /// <summary>
+    /// LoginViewModel to handle logging in
+    /// </summary>
     public class LoginViewModel : BaseViewModel
     {
         #region Properties
         private string username;
+
+        /// <summary>
+        /// Username of the user who wants to login.
+        /// </summary>
         public string Username
         {
             get { return username; }
@@ -19,6 +25,9 @@ namespace UserInteface.ViewModels
             }
         }
 
+        /// <summary>
+        /// Command to log the user in.
+        /// </summary>
         public DelegateCommand LoginCommand
         {
             get;
@@ -26,12 +35,15 @@ namespace UserInteface.ViewModels
         }
         #endregion Properties
 
+        /// <summary>
+        /// Create a new LoginViewModel
+        /// </summary>
         public LoginViewModel()
         {
-            CreateCommands();
+            CreateLoginCommand();
         }
 
-        private void CreateCommands()
+        private void CreateLoginCommand()
         {
             LoginCommand = new DelegateCommand(execute: (parameter) =>
                 {
@@ -41,7 +53,7 @@ namespace UserInteface.ViewModels
                     if (auth.Login(Username, password))
                     {  
                         Xceed.Wpf.Toolkit.MessageBox.Show(
-                            String.Format("Welkom {0}!", auth.Username),
+                            String.Format("Welkom {0}!", auth.User.Username),
                             "Succes", System.Windows.MessageBoxButton.OK
                         );
                     }
@@ -54,10 +66,7 @@ namespace UserInteface.ViewModels
                     }
                     Username = "";
                 },
-                canExecute: (obj) =>
-                {
-                    return ! String.IsNullOrWhiteSpace(Username);
-                }
+                canExecute: (obj) => ! String.IsNullOrWhiteSpace(Username)
             );
         }
 

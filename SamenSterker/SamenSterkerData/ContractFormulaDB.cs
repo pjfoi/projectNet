@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SamenSterkerData
 {
+    /// <summary>
+    /// Database interaction for contract formulas
+    /// </summary>
     public class ContractFormulaDB
     {
         private static readonly string selectAllQuery =
@@ -15,14 +15,18 @@ namespace SamenSterkerData
         private static readonly string insertCommand =
                   @"INSERT INTO ContractFormula 
                      (Description, MaxUsageHoursPerPeriod, PeriodInMonths, NoticePeriodInMonths, Price)
-                    VALUES (@Description, @MaxUsage, @Period, @NoticePeriod, @Price)";
+                    VALUES (@Description, @MaxUsageHoursPerPeriod, @PeriodInMonths, @NoticePeriod, @Price)";
 
         private static readonly string updateCommand =
                   @"UPDATE ContractFormula 
-                    SET Description = @Description, MaxUsageHoursPerPeriod = @MaxUsage, 
-                        PeriodInMonths = @Period, NoticePeriod = @NoticePeriod, Price = @Price
-                    WHERE Id = ";
+                    SET Description = @Description, MaxUsageHoursPerPeriod = @MaxUsageHoursPerPeriod, 
+                        PeriodInMonths = @PeriodInMonths, NoticePeriod = @NoticePeriod, Price = @Price
+                    WHERE Id = @Id";
 
+        /// <summary>
+        /// Get all the contract formulas.
+        /// </summary>
+        /// <returns>All the contract formulas.</returns>
         public static IList<ContractFormula> GetAll()
         {
             using (SqlConnection connection = SamenSterkerDB.GetConnection())
@@ -32,6 +36,12 @@ namespace SamenSterkerData
             }
         }
 
+        /// <summary>
+        /// Get the contract formula with the specified id.
+        /// </summary>
+        /// <param name="contractFormulaId">The id of the requested 
+        /// contract formula</param>
+        /// <returns>The requested contract formula if it exists.</returns>
         public static ContractFormula GetById(int contractFormulaId)
         {
             using (SqlConnection connection = SamenSterkerDB.GetConnection())
@@ -43,13 +53,18 @@ namespace SamenSterkerData
             }
         }
 
+        /// <summary>
+        /// Save the specified contract formula.
+        /// </summary>
+        /// <param name="contractFormula">The contract formula to be saved.</param>
+        /// <returns>Number of affected rows.</returns>
         public static int Save(ContractFormula contractFormula)
         {
             using (SqlConnection connection = SamenSterkerDB.GetConnection())
             {
                 int rowsAffected = connection.Execute(
-                    isNew(contractFormula) ? insertCommand : updateCommand,
-                    contractFormula
+                    sql: isNew(contractFormula) ? insertCommand : updateCommand,
+                    param: contractFormula
                 );
                 //SetIdentity<int>(connection, id => subCategory.Id = id);
                 return rowsAffected;
@@ -61,13 +76,18 @@ namespace SamenSterkerData
             return contractFormula.Id == 0;
         }
 
+        /// <summary>
+        /// Delete the specified contract formula.
+        /// </summary>
+        /// <param name="contractFormula">The contract formula to be deleted.</param>
+        /// <returns>Number of affected rows.</returns>
         public static int Delete(ContractFormula contractFormula)
         {
             using (SqlConnection connection = SamenSterkerDB.GetConnection())
             {
                 return connection.Execute(
-                    "DELETE FROM ContractFormula WHERE Id = @Id",
-                    contractFormula
+                    sql: "DELETE FROM ContractFormula WHERE Id = @Id",
+                    param: contractFormula
                 );
             }
         }

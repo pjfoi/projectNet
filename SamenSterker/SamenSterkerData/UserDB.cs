@@ -1,14 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SamenSterkerData
 {
+    /// <summary>
+    /// Database interaction for user models.
+    /// </summary>
     public class UserDB
     {
+        // To create users, use WebSecurity.CreateUserAndAccount()
+
         private static readonly string selectAllQuery =
             @"SELECT u.*, c.* FROM [User] u
               LEFT JOIN Company c ON u.CompanyId = c.Id ";
@@ -16,6 +18,10 @@ namespace SamenSterkerData
         private static readonly string deleteQuery =
             "DELETE FROM [User] WHERE id = @Id";
 
+        /// <summary>
+        /// Get all the users.
+        /// </summary>
+        /// <returns>All the users</returns>
         public static List<User> GetAll()
         {
             using (SqlConnection connection = SamenSterkerDB.GetConnection())
@@ -26,6 +32,12 @@ namespace SamenSterkerData
             }
         }
 
+        /// <summary>
+        /// Get all the users of the specified company.
+        /// </summary>
+        /// <param name="company">The company of which the users
+        /// are requested.</param>
+        /// <returns>The users of the specified company.</returns>
         public static List<User> GetFromCompany(Company company)
         {
             using (SqlConnection connection = SamenSterkerDB.GetConnection())
@@ -38,6 +50,11 @@ namespace SamenSterkerData
             }
         }
 
+        /// <summary>
+        /// Get the user with the specified id.
+        /// </summary>
+        /// <param name="id">The id of the requested user</param>
+        /// <returns>The user if it exists</returns>
         public static User GetById(int id)
         {
             using (SqlConnection connection = SamenSterkerDB.GetConnection())
@@ -50,6 +67,11 @@ namespace SamenSterkerData
             }
         }
 
+        /// <summary>
+        /// Get the user with the specified username.
+        /// </summary>
+        /// <param name="username">The username of the requested user</param>
+        /// <returns>The user if it exists</returns>
         public static User GetByUsername(string username)
         {
             using (SqlConnection connection = SamenSterkerDB.GetConnection())
@@ -62,6 +84,11 @@ namespace SamenSterkerData
             }
         }
 
+        /// <summary>
+        /// Delete the specified user.
+        /// </summary>
+        /// <param name="user">The user to be deleted</param>
+        /// <returns>Number of affected rows.</returns>
         public static int Delete(User user)
         {
             using (SqlConnection connection = SamenSterkerDB.GetConnection())
@@ -70,6 +97,11 @@ namespace SamenSterkerData
             }
         }
 
+        /// <summary>
+        /// Delete the specified users.
+        /// </summary>
+        /// <param name="users">The users to be deleted</param>
+        /// <returns>Number of affected rows.</returns>
         public static int Delete(IEnumerable<User> users)
         {
             using (SqlConnection connection = SamenSterkerDB.GetConnection())

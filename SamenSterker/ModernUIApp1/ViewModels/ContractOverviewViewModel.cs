@@ -7,9 +7,15 @@ using UserInteface.Lib;
 
 namespace UserInteface.ViewModels
 {
+    /// <summary>
+    /// ContractOverviewViewModel to show an overview of contract models
+    /// </summary>
     public class ContractOverviewViewModel : BaseOverviewViewModel<Contract>
     {
         #region Properties
+        /// <summary>
+        /// Command to stop an ongoing contract.
+        /// </summary>
         public DelegateCommand StopCommand
         {
             get;
@@ -17,11 +23,13 @@ namespace UserInteface.ViewModels
         }
         #endregion Properties
 
+        /// <summary>
+        /// Create an ContractOverviewViewModel
+        /// </summary>
         public ContractOverviewViewModel() : base("contract")
         {
             Mediator.Register(this);
             CreateStopCommand();
-
         }
 
         private void CreateStopCommand()
@@ -45,11 +53,8 @@ namespace UserInteface.ViewModels
                     );
                 }
             },
-            canExecute: (obj) =>
-                {
-                    return IsOneItemSelected()
-                        && CanContractBeStopped((Contract)SelectedItems[0]);
-                }
+            canExecute: (obj) => IsOneItemSelected()
+                        && CanContractBeStopped(GetFirstSelectedItem())
             );
 
             Commands.Add(StopCommand);
@@ -65,24 +70,42 @@ namespace UserInteface.ViewModels
                 && (possibleNewEndDate < contract.EndDate);
         }
 
+        /// <summary>
+        /// Edit the specified contract.
+        /// </summary>
+        /// <param name="contract">The contract to be edited.</param>
         protected override void EditItem(Contract contract)
         {
             Navigator.Navigate<ContractEditViewModel>(contract);
         }
 
+        /// <summary>
+        /// Delete the specified contracts.
+        /// </summary>
+        /// <param name="contracts">The contracts to be deleted.</param>
         protected override void DeleteItems(IEnumerable<Contract> contracts)
         {
             ContractDB.Delete(contracts);
         }
 
-        protected override IEnumerable<Contract> GetAdminItems(User user)
+        /// <summary>
+        /// Fetch the contracts for the overview for the specified admin user.
+        /// </summary>
+        /// <param name="user">The admin user.</param>
+        /// <returns>The contracts for the specified admin user.</returns>
+        protected override IEnumerable<Contract> FetchAdminItems(User admin)
         {
             return ContractDB.GetAll();
         }
 
-        protected override IEnumerable<Contract> GetClientItems(User user)
+        /// <summary>
+        /// Fetch the contracts for the overview for the specified client user.
+        /// </summary>
+        /// <param name="user">The client user.</param>
+        /// <returns>The contracts for the specified client user.</returns>
+        protected override IEnumerable<Contract> FetchClientItems(User client)
         {
-            return ContractDB.GetFromCompany(user.Company);
+            return ContractDB.GetFromCompany(client.Company);
         }
 
         [MediatorMessageSink(MediatorMessages.ContractEdit, ParameterType = typeof(string))]

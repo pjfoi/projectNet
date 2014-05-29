@@ -6,25 +6,31 @@ using System.Threading.Tasks;
 
 namespace SamenSterkerData
 {
+
+    /// <summary>
+    /// A Location Model.
+    /// </summary>
     public class Location
     {
         private int id;
+        private string name;
 
+        /// <summary>
+        /// The id of the loation.
+        /// </summary>
         public int Id
         {
             get { return id; }
             set { id = value; }
         }
-        private string name;
 
+        /// <summary>
+        /// The name of the location.
+        /// </summary>
         public string Name
         {
             get { return name; }
             set { name = value; }
-        }
-
-        public Location()
-        {
         }
     }
 }

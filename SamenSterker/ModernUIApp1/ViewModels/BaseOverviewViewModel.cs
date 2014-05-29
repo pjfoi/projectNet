@@ -9,10 +9,18 @@ using UserInteface.Lib;
 
 namespace UserInteface.ViewModels
 {
+    /// <summary>
+    /// Base class for an overview of items
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public abstract class BaseOverviewViewModel<T> : BaseViewModel
     {
         #region Properties
         private ObservableCollection<T> items;
+
+        /// <summary>
+        /// Items of the overview
+        /// </summary>
         public ObservableCollection<T> Items
         {
             get { return items; }
@@ -23,6 +31,10 @@ namespace UserInteface.ViewModels
         }
 
         private IList<Object> _selectedItems;
+
+        /// <summary>
+        /// Selected items in the overview
+        /// </summary>
         public IList<Object> SelectedItems
         {
             get { return _selectedItems; }
@@ -35,12 +47,18 @@ namespace UserInteface.ViewModels
             }
         }
 
+        /// <summary>
+        /// Command to delete the selected items
+        /// </summary>
         public DelegateCommand DeleteCommand
         {
             get;
             internal set;
         }
 
+        /// <summary>
+        /// Command to edit the selected item
+        /// </summary>
         public DelegateCommand EditCommand
         {
             get;
@@ -48,6 +66,11 @@ namespace UserInteface.ViewModels
         }
 
         private IList<DelegateCommand> commands;
+
+        /// <summary>
+        /// All the commands of the overview.
+        /// The canExecute method is reevaluated after the selected items change.
+        /// </summary>
         protected IList<DelegateCommand> Commands
         {
             get { return commands; }
@@ -55,6 +78,10 @@ namespace UserInteface.ViewModels
         }
 
         private Func<User, IEnumerable<T>> getItems;
+
+        /// <summary>
+        /// Function to get the items.
+        /// </summary>
         protected Func<User, IEnumerable<T>> GetItems
         {
             get { return getItems; }
@@ -64,6 +91,10 @@ namespace UserInteface.ViewModels
         private string nameItems;
         #endregion Properties
 
+        /// <summary>
+        /// Create a BaseModelOverviewViewModel
+        /// </summary>
+        /// <param name="name">Name of the type of items.</param>
         public BaseOverviewViewModel(string name)
         {
             nameItems = name;
@@ -74,14 +105,14 @@ namespace UserInteface.ViewModels
             Mediator.Register(MediatorMessages.LoginAdmin, (Action<User>)
                 delegate(User user)
                 {
-                    GetItems = GetAdminItems;
+                    GetItems = FetchAdminItems;
                     Refresh();
                 });
 
             Mediator.Register(MediatorMessages.LoginClient, (Action<User>)
                 delegate(User user) 
                 {
-                    GetItems = GetClientItems;
+                    GetItems = FetchClientItems;
                     Refresh();
                 });
         }
@@ -110,7 +141,7 @@ namespace UserInteface.ViewModels
                     }
                 }
             },
-                canExecute: (obj) => { return AreMultipleItemsSelected(); }
+                canExecute: (obj) => AreMultipleItemsSelected()
             );
             Commands.Add(DeleteCommand);
         }
@@ -121,21 +152,32 @@ namespace UserInteface.ViewModels
             {
                 EditItem(GetFirstSelectedItem());
             },
-                canExecute: (obj) => { return IsOneItemSelected(); }
+                canExecute: (obj) => IsOneItemSelected()
             );
             Commands.Add(EditCommand);
         }
 
+        /// <summary>
+        /// Get the first selected item.
+        /// </summary>
+        /// <returns>The first selected item.</returns>
         protected T GetFirstSelectedItem()
         {
             return (T)SelectedItems[0];
         }
 
+        /// <summary>
+        /// Get all the selected items.
+        /// </summary>
+        /// <returns>The selected items.</returns>
         protected IEnumerable<T> GetSelectedItems()
         {
             return SelectedItems.Cast<T>();
         }
 
+        /// <summary>
+        /// Refresh the items of the overview.
+        /// </summary>
         public void Refresh()
         {
             System.Diagnostics.Debug.WriteLine(
@@ -150,23 +192,49 @@ namespace UserInteface.ViewModels
             );
         }
 
+        /// <summary>
+        /// Whether or not only one item is selected.
+        /// </summary>
+        /// <returns>Is one item selected.</returns>
         protected bool IsOneItemSelected()
         {
             return SelectedItems != null && SelectedItems.Count == 1;
         }
 
+        /// <summary>
+        /// Whether or not multiple items are selected.
+        /// </summary>
+        /// <returns>Are multiple items selected.</returns>
         protected bool AreMultipleItemsSelected()
         {
             return SelectedItems != null && SelectedItems.Count > 0;
         }
 
+        /// <summary>
+        /// Edit the specified item.
+        /// </summary>
+        /// <param name="item">The item to be edited.</param>
         abstract protected void EditItem(T item);
 
+        /// <summary>
+        /// Delete the specified items.
+        /// </summary>
+        /// <param name="items">The items to be deleted.</param>
         abstract protected void DeleteItems(IEnumerable<T> items);
 
-        abstract protected IEnumerable<T> GetAdminItems(User user);
+        /// <summary>
+        /// Fetch the items for the overview for the specified admin.
+        /// </summary>
+        /// <param name="user">The currently logged in user.</param>
+        /// <returns>The items for the specified admin.</returns>
+        abstract protected IEnumerable<T> FetchAdminItems(User admin);
 
-        abstract protected IEnumerable<T> GetClientItems(User user);
+        /// <summary>
+        /// Fetch the items for the overview for the specified client.
+        /// </summary>
+        /// <param name="user">The client.</param>
+        /// <returns>Tbe items for the specified client.</returns>
+        abstract protected IEnumerable<T> FetchClientItems(User client);
 
     }
 }

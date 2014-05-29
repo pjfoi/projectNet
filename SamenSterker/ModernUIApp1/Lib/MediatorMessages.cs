@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace UserInteface.Lib
 {
+    /// <summary>
+    /// (Enum) Messages to pass to a Mediator.
+    /// </summary>
     public static class MediatorMessages
     {
         public const string LoginAdmin = "LoginAdmin";

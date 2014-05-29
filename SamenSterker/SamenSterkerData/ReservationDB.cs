@@ -3,15 +3,14 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SamenSterkerData
 {
-
+    /// <summary>
+    /// Database interaction for reservation models.
+    /// </summary>
     public class ReservationDB
     {
-
         private static readonly string selectAllQuery =
             @"SELECT r.*, l.*, c.* FROM Reservation r
               LEFT JOIN Location l ON r.LocationId = l.Id 
@@ -32,6 +31,10 @@ namespace SamenSterkerData
         private static readonly string deleteQuery =
             "DELETE FROM Reservation WHERE Id = @Id";
 
+        /// <summary>
+        /// Get all the reservations.
+        /// </summary>
+        /// <returns>All the reservations.</returns>
         public static List<Reservation> GetAll()
         {
             using (SqlConnection connection = SamenSterkerDB.GetConnection())
@@ -42,6 +45,12 @@ namespace SamenSterkerData
             }
         }
 
+        /// <summary>
+        /// Get the reservations on the specified date.
+        /// </summary>
+        /// <param name="date">The date of which the reservations are 
+        /// requested</param>
+        /// <returns>All the reservation on the specified date</returns>
         public static List<Reservation> GetAllOnDate(DateTime date)
         {
             string query = selectAllQuery +
@@ -57,6 +66,12 @@ namespace SamenSterkerData
             }
         }
 
+        /// <summary>
+        /// Get all the reservations of the specified company.
+        /// </summary>
+        /// <param name="company">The company of which the reservatios
+        /// are requested.</param>
+        /// <returns>The reservations of the company.</returns>
         public static List<Reservation> GetFromCompany(Company company)
         {
             using (SqlConnection connection = SamenSterkerDB.GetConnection())
@@ -69,6 +84,11 @@ namespace SamenSterkerData
             }
         }
 
+        /// <summary>
+        /// Get the reservation with the specified id.
+        /// </summary>
+        /// <param name="reservationId">The id of the requested reservation</param>
+        /// <returns>The reservation if it exists.</returns>
         public static Reservation GetById(int reservationId)
         {
             using (SqlConnection connection = SamenSterkerDB.GetConnection())
@@ -81,6 +101,11 @@ namespace SamenSterkerData
             }
         }
 
+        /// <summary>
+        /// Save the specified reservation.
+        /// </summary>
+        /// <param name="reservation">The reservation to be saved.</param>
+        /// <returns>Number of affected rows.</returns>
         public static int Save(Reservation reservation)
         {
             // set LocationId if Location is specifified
@@ -106,6 +131,11 @@ namespace SamenSterkerData
             }
         }
 
+        /// <summary>
+        /// Delete the specified reservation.
+        /// </summary>
+        /// <param name="reservation">The reservation to be deleted.</param>
+        /// <returns>Number of affected rows.</returns>
         public static int Delete(Reservation reservation)
         {
             using (SqlConnection connection = SamenSterkerDB.GetConnection())
@@ -114,6 +144,11 @@ namespace SamenSterkerData
             }
         }
 
+        /// <summary>
+        /// Delete the specified reservations.
+        /// </summary>
+        /// <param name="reservation">The reservations to be deleted.</param>
+        /// <returns>Number of affected rows.</returns>
         public static int Delete(IEnumerable<Reservation> reservations)
         {
             using (SqlConnection connection = SamenSterkerDB.GetConnection())
@@ -141,6 +176,14 @@ namespace SamenSterkerData
             }
         }
 
+        /// <summary>
+        /// Is the specified reservation valid ?
+        ///  - Does a contract exists for the selected time ?
+        ///  - Is the selected location free at the selected time ?
+        ///  - Is the limit of the contract not exceeded ?
+        /// </summary>
+        /// <param name="reservation">The reservation to be checked</param>
+        /// <returns>If the reservation is valid</returns>
         public static bool IsReservationPossible(Reservation reservation)
         {
             // a contract exists for the time of the reservation
@@ -189,8 +232,8 @@ namespace SamenSterkerData
                 @"SELECT COUNT(*) FROM Reservation
                   WHERE LocationId = @LocationId
                     AND (@StartDate BETWEEN StartDate AND EndDate
-                        OR @EndDate BETWEEN StartDate And EndDate)";
-                  //AND Id != @Id // for updating a reservation ??
+                        OR @EndDate BETWEEN StartDate And EndDate)
+                    AND Id != @Id";
             int nbConflicts = connection.Query<int>(
                 selectConflictingReservations, reservation
             ).Single();
@@ -205,14 +248,19 @@ namespace SamenSterkerData
                   FROM Reservations r
                   WHERE r.CompanyId = @CompanyId
                     AND r.StartDate BETWEEN @StartDate AND @EndDate
-                    AND r.EndDate BETWEEN @StartDate AND @EndDate";
-                //AND Id != @ReservationId // for updating a reservation ??
+                    AND r.EndDate BETWEEN @StartDate AND @EndDate
+                    AND r.Id != @ReservationId";
             int nbMinutes = connection.Query<int>(
                 selectTotalMinutes, contract
             ).Single();
             return nbMinutes;
         }
 
+        /// <summary>
+        /// Are there any reservations for the specified contract.
+        /// </summary>
+        /// <param name="contract">The contract to check</param>
+        /// <returns>Whether or not any reservations exist.</returns>
         public static bool ExistsReservationOfContract(Contract contract)
         {
             const string reservationExistsQuery =

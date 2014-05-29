@@ -9,9 +9,18 @@
         <ScrollViewer>
             <StackPanel MinWidth="200">
                 <TextBlock Text="OVER" Style="{StaticResource Heading2}" />
-                <TextBlock Text="Co Working Samen Sterker" Margin="0,0,0,8" TextWrapping="Wrap" />
-                <TextBlock Text="Martijn Bloemen - Pieter-Jan Nickmans - Peter Neyens - Kristof Vrysen"
-                           Margin="0,0,0,8" TextWrapping="Wrap" />
+                <TextBlock Margin="0,15,0,8" TextWrapping="Wrap" FontWeight="Bold">
+                    De Samen Sterker Applicatie
+                </TextBlock>
+                <TextBlock Margin="0,0,0,8" TextWrapping="Wrap">
+                    Groep AB 1
+                </TextBlock>
+                <TextBlock Margin="0,0,0,8" TextWrapping="Wrap">
+                    Martijn Bloemen<LineBreak/>
+                    Pieter-Jan Nickmans<LineBreak/>
+                    Peter Neyens<LineBreak/>
+                    Kristof Vrysen
+                </TextBlock>
             </StackPanel>
         </ScrollViewer>
     </Grid>

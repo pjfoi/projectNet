@@ -1,17 +1,20 @@
 ﻿using SamenSterkerData;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UserInteface.Lib;
 
 namespace UserInteface.ViewModels
 {
+    /// <summary>
+    /// CompanyEditViewModel : Create or edit a company
+    /// </summary>
     public class CompanyEditViewModel : BaseViewModel
     {
         #region Properties
         private Company company;
+
+        /// <summary>
+        /// Company which is edited/created
+        /// </summary>
         public Company Company
         {
             get { return company; }
@@ -22,6 +25,9 @@ namespace UserInteface.ViewModels
             }
         }
 
+        /// <summary>
+        /// Command to save the company
+        /// </summary>
         public DelegateCommand SaveCommand
         {
             get;
@@ -29,26 +35,20 @@ namespace UserInteface.ViewModels
         }
         #endregion Properties
 
+        /// <summary>
+        /// Create a new CompanyEditViewModel
+        /// </summary>
         public CompanyEditViewModel()
         {
-            CreateCommands();
+            CreateSaveCommand();
         }
 
-        private void CreateCommands()
+        private void CreateSaveCommand()
         {
             SaveCommand = new DelegateCommand(execute: (obj) =>
             {
                 // check if all required fields have been filled in
-                int nbFieldsLeftOpen = NbRequiredFieldsOpen(
-                    Company.Name,
-                    Company.Street,
-                    Company.Zipcode,
-                    Company.City,
-                    Company.Country,
-                    Company.Email,
-                    Company.Phone,
-                    Company.Employees
-                );
+                int nbFieldsLeftOpen = GetNbRequiredFieldsLeftOpen();
                 if (nbFieldsLeftOpen > 0)
                 {
                     Xceed.Wpf.Toolkit.MessageBox.Show(
@@ -60,27 +60,45 @@ namespace UserInteface.ViewModels
 
                 // save the company
                 CompanyDB.Save(Company);
+                Mediator.NotifyColleagues<string>(MediatorMessages.CompanyEdit, "");
                 Xceed.Wpf.Toolkit.MessageBox.Show(
                     "Bedrijf opgeslagen", "Succes", System.Windows.MessageBoxButton.OK
                 );
-                Mediator.NotifyColleagues<string>(MediatorMessages.CompanyEdit, "");
 
                 // navigate to the company overview
                 Navigator.Navigate<CompanyOverviewViewModel>();
-
-                // clear fields
-                //ShowCompany();
             });
         }
 
+        /// <summary>
+        /// Show a default company in the edit form.
+        /// </summary>
         public void ShowCompany()
         {
             ShowCompany(new Company());
         }
 
+        /// <summary>
+        /// Show the specified company in the edit form.
+        /// </summary>
+        /// <param name="company"></param>
         public void ShowCompany(Company company)
         {
             Company = company;
+        }
+
+        private int GetNbRequiredFieldsLeftOpen()
+        {
+            return NbRequiredFieldsOpen(
+                Company.Name,
+                Company.Street,
+                Company.Zipcode,
+                Company.City,
+                Company.Country,
+                Company.Email,
+                Company.Phone,
+                Company.Employees
+            );
         }
 
     }

@@ -1,14 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Data.SqlClient;
 
 namespace SamenSterkerData
 {
+    /// <summary>
+    /// Interaction with the SamenSterker Database
+    /// </summary>
     public static class SamenSterkerDB
     {
+        /// <summary>
+        /// Get a connection to the database.
+        /// </summary>
+        /// <returns>A connection to the database</returns>
         public static SqlConnection GetConnection()
         {
             string connectionString = 
@@ -31,8 +33,7 @@ namespace SamenSterkerData
             //        break;
             //}
 
-            SqlConnection connection = new SqlConnection(connectionString);
-            return connection;
+            return new SqlConnection(connectionString);
         }
     }
 }

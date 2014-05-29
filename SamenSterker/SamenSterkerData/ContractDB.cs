@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace SamenSterkerData
 {
+    /// <summary>
+    /// Database interactions for contracts.
+    /// </summary>
     public class ContractDB
     {
         private static readonly string selectAllQuery =
@@ -30,6 +33,10 @@ namespace SamenSterkerData
         private static readonly string deleteQuery =
             "DELETE FROM Contract WHERE Id = @Id";
 
+        /// <summary>
+        /// Get all contracts.
+        /// </summary>
+        /// <returns>All contracts</returns>
         public static List<Contract> GetAll()
         {
             using (SqlConnection connection = SamenSterkerDB.GetConnection())
@@ -40,6 +47,11 @@ namespace SamenSterkerData
             }
         }
 
+        /// <summary>
+        /// Get all contracts of the specified company.
+        /// </summary>
+        /// <param name="company">The company of which the contracts are requested</param>
+        /// <returns>The contracts of the specified company.</returns>
         public static List<Contract> GetFromCompany(Company company)
         {
             using (SqlConnection connection = SamenSterkerDB.GetConnection())
@@ -52,6 +64,11 @@ namespace SamenSterkerData
             }
         }
 
+        /// <summary>
+        /// Get the contract with the specified id.
+        /// </summary>
+        /// <param name="contractId">The id of the requested contract.</param>
+        /// <returns>The contract if it exists.</returns>
         public static Contract GetById(int contractId)
         {
             using (SqlConnection connection = SamenSterkerDB.GetConnection())
@@ -71,6 +88,11 @@ namespace SamenSterkerData
             return ct;
         }
 
+        /// <summary>
+        /// Save the specified contract if there is no conflicting contract.
+        /// </summary>
+        /// <param name="contract">The contract to be saved.</param>
+        /// <returns>Number of affected rows.</returns>
         public static int Save(Contract contract)
         {
             if (contract.CompanyId == 0 && contract.Company != null)
@@ -101,6 +123,12 @@ namespace SamenSterkerData
             }
         }
 
+        /// <summary>
+        /// Stop the specified contract if there are no reservations in the remainder
+        /// of the term of the specified contract.
+        /// </summary>
+        /// <param name="contract"></param>
+        /// <returns></returns>
         public static int Stop(Contract contract)
         {
             if (ReservationDB.ExistsReservationOfContract(contract))
@@ -143,6 +171,11 @@ namespace SamenSterkerData
             return contract.Id == 0;
         }
 
+        /// <summary>
+        /// Delete the specified contract.
+        /// </summary>
+        /// <param name="contract">The contract to be deleted.</param>
+        /// <returns>Number of affected rows.</returns>
         public static int Delete(Contract contract)
         {
             using (SqlConnection connection = SamenSterkerDB.GetConnection())
@@ -151,6 +184,11 @@ namespace SamenSterkerData
             }
         }
 
+        /// <summary>
+        /// Delete the specified contracts.
+        /// </summary>
+        /// <param name="contracts">The companies to be deleted.</param>
+        /// <returns>Number of affected rows.</returns>
         public static int Delete(IEnumerable<Contract> contracts)
         {
             using (SqlConnection connection = SamenSterkerDB.GetConnection())
@@ -178,6 +216,12 @@ namespace SamenSterkerData
             }
         }
 
+        /// <summary>
+        /// Get the contract to which the specified reservation belongs.
+        /// </summary>
+        /// <param name="reservation">The reservation of which the contract 
+        /// is requested</param>
+        /// <returns>The contract of the specified reservation</returns>
         internal static Contract GetContractForReservation(Reservation reservation)
         {
             string selectContractExists = 

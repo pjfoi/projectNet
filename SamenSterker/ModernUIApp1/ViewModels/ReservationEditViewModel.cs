@@ -1,18 +1,25 @@
-﻿using SamenSterkerData;
+﻿using MediatorLib;
+using SamenSterkerData;
 using SamenSterkerData.Exceptions;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using UserInteface.Lib;
 
 namespace UserInteface.ViewModels
 {
+    /// <summary>
+    /// ReservationEditViewModel : Create or edit a reservation.
+    /// </summary>
     public class ReservationEditViewModel : BaseViewModel
     {
 
         #region Properties
         private Reservation reservation;
+
+        /// <summary>
+        /// The reservation which is created or edited.
+        /// </summary>
         public Reservation Reservation
         {
             get { return reservation; }
@@ -24,19 +31,38 @@ namespace UserInteface.ViewModels
         }
 
         private IList<Location> locations;
+
+        /// <summary>
+        /// All the locations which can be selected.
+        /// </summary>
         public IList<Location> Locations
         {
             get { return locations; }
-            set { locations = value; }
+            set 
+            { 
+                locations = value;
+                OnPropertyChanged("Locations");
+            }
         }
 
         private IList<Company> companies;
+
+        /// <summary>
+        /// All the companies which can reserve a location.
+        /// </summary>
         public IList<Company> Companies
         {
             get { return companies; }
-            set { companies = value; }
+            set 
+            { 
+                companies = value;
+                OnPropertyChanged("Companies");
+            }
         }
 
+        /// <summary>
+        /// Command to save a reservation.
+        /// </summary>
         public DelegateCommand SaveCommand
         {
             get;
@@ -44,53 +70,48 @@ namespace UserInteface.ViewModels
         }
         #endregion Properties
 
+        /// <summary>
+        /// Create a new ReservationEditViewModel
+        /// </summary>
         public ReservationEditViewModel()
         {
-            Locations = LocationDB.GetAll().ToList<Location>();
-            Companies = CompanyDB.GetAll();
-            CreateCommands();
-            ShowReservation();
+            UpdateLocations();
+            UpdateCompanies();
+            CreateSaveCommand();
+            Mediator.Register(this);
         }
 
-        private void CreateCommands()
+        private void UpdateCompanies()
+        {
+            Companies = CompanyDB.GetAll();
+        }
+
+        private void UpdateLocations()
+        {
+            Locations = LocationDB.GetAll().ToList<Location>();
+        }
+
+        private void CreateSaveCommand()
         {
             SaveCommand = new DelegateCommand(execute: (obj) =>
+            {
+                SetCompanyIdIfClient();
+
+                // check if all required fields have been filled in
+                int nbFieldsLeftOpen = GetNbRequiredFieldsLeftOpen();
+                if (nbFieldsLeftOpen > 0)
                 {
-                    // set company id if a client is logged in
-                    Auth auth = ((App)App.Current).Auth;
-                    if (auth.isClient)
-                    {
-                        Reservation.CompanyId = auth.User.CompanyId;
-                    }
-
-                    // check if all required fields have been filled in
-                    int nbFieldsLeftOpen = NbRequiredFieldsOpen(
-                        Reservation.StartDate,
-                        Reservation.EndDate,
-                        Reservation.LocationId,
-                        Reservation.CompanyId
+                    Xceed.Wpf.Toolkit.MessageBox.Show(
+                        String.Format("U hebt {0} veld(en) niet ingevuld.", nbFieldsLeftOpen), 
+                        "Misukt", System.Windows.MessageBoxButton.OK
                     );
-                    if (nbFieldsLeftOpen > 0)
-                    {
-                        Xceed.Wpf.Toolkit.MessageBox.Show(
-                            String.Format("U hebt {0} veld(en) niet ingevuld.", nbFieldsLeftOpen), 
-                            "Misukt", System.Windows.MessageBoxButton.OK
-                        );
-                        return;
-                    }
+                    return;
+                }
 
-                    try
-                    {
-                        ReservationDB.IsReservationPossible(reservation);
-                    }
-                    catch (InvalidReservationException exception)
-                    {
-                        Xceed.Wpf.Toolkit.MessageBox.Show(
-                            exception.Message, "Mislukt", System.Windows.MessageBoxButton.OK
-                        );
-                        return;
-                    }
-
+                try
+                {
+                    ReservationDB.IsReservationPossible(reservation);
+                        
                     // save the reservation
                     ReservationDB.Save(Reservation);
                     Mediator.NotifyColleagues<string>(MediatorMessages.ReservationEdit, "");
@@ -100,36 +121,73 @@ namespace UserInteface.ViewModels
 
                     // navigate to reservation overview
                     Navigator.Navigate<ReservationOverviewViewModel>();
-
-                    // clear fields
-                    //ShowReservation();
                 }
+                catch (InvalidReservationException exception)
+                {
+                    Xceed.Wpf.Toolkit.MessageBox.Show(
+                        exception.Message, "Mislukt", System.Windows.MessageBoxButton.OK
+                    );
+                }
+                    
+            });
+        }
+
+        private void SetCompanyIdIfClient()
+        {
+            Auth auth = ((App)App.Current).Auth;
+            if (auth.isClient)
+            {
+                Reservation.CompanyId = auth.User.CompanyId;
+            }
+        }
+
+        private int GetNbRequiredFieldsLeftOpen()
+        {
+            return NbRequiredFieldsOpen(
+                Reservation.StartDate,
+                Reservation.EndDate,
+                Reservation.LocationId,
+                Reservation.CompanyId
             );
         }
 
-        private Reservation CreateDefaultReservation()
-        {
-            DateTime start = RoundUp(DateTime.Now, TimeSpan.FromMinutes(5));
-            Reservation defaultReservation = new Reservation();
-            defaultReservation.StartDate = start;
-            defaultReservation.EndDate = start.AddHours(1);
-            return defaultReservation;
-        }
-
+        /// <summary>
+        /// Show a default reservation in the edit form.
+        /// </summary>
         public void ShowReservation()
         {
             ShowReservation(CreateDefaultReservation());
         }
 
+        /// <summary>
+        /// Show the specified reservation in the edit form.
+        /// </summary>
         public void ShowReservation(Reservation reservation)
         {
             Reservation = reservation;
+        }
+
+        private Reservation CreateDefaultReservation()
+        {
+            DateTime start = RoundMinutesUp(DateTime.Now, 5);
+            return new Reservation { StartDate = start, EndDate = start.AddHours(1) };
+        }
+
+        private DateTime RoundMinutesUp(DateTime dt, int minutes)
+        {
+            return RoundUp(dt, TimeSpan.FromMinutes(minutes));
         }
 
         // source http://stackoverflow.com/a/7029464
         private DateTime RoundUp(DateTime dt, TimeSpan d)
         {
             return new DateTime(((dt.Ticks + d.Ticks - 1) / d.Ticks) * d.Ticks);
+        }
+
+        [MediatorMessageSink(MediatorMessages.CompanyEdit, ParameterType = typeof(string))]
+        private void UpdateCompanies(string parameter)
+        {
+            UpdateCompanies();
         }
 
     }

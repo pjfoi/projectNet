@@ -1,28 +1,43 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SamenSterkerData
 {
+    /// <summary>
+    /// A Reservation Model.
+    /// </summary>
     public class Reservation : BaseModel
     {
         private int id;
+        private int number;
+        private DateTime startDate;
+        private DateTime endDate;
+        private int locationId;
+        private Location location;
+        private int companyId;
+        private Company company;
+
+        /// <summary>
+        /// The id of the reservation.
+        /// </summary>
         public int Id
         {
             get { return id; }
             set { id = value; }
         }
 
-        private int number;
+        /// <summary>
+        /// The number of the reservation.
+        /// </summary>
         public int Number
         {
             get { return number; }
             set { number = value; }
         }
 
-        private DateTime startDate;
+        /// <summary>
+        /// The start date and time of the reservation.
+        /// </summary>
         public DateTime StartDate
         {
             get { return startDate; }
@@ -33,7 +48,9 @@ namespace SamenSterkerData
             }
         }
 
-        private DateTime endDate;
+        /// <summary>
+        /// The end date and time of the reservation.
+        /// </summary>
         public DateTime EndDate
         {
             get { return endDate; }
@@ -44,44 +61,50 @@ namespace SamenSterkerData
             }
         }
 
-        private int locationId;
+        /// <summary>
+        /// The id of the location of the reservation.
+        /// </summary>
         public int LocationId
         {
             get { return locationId; }
             set { locationId = value; }
         }
 
-        private Location location;
-
+        /// <summary>
+        /// The location of the reservation.
+        /// </summary>
         public Location Location
         {
             get { return location; }
             set { location = value; }
         }
 
-        private int companyId;
+        /// <summary>
+        /// The id of the company of the reservation.
+        /// </summary>
         public int CompanyId
         {
             get { return companyId; }
             set { companyId = value; }
         }
 
-        private Company company;
+        /// <summary>
+        /// The company of the reservation.
+        /// </summary>
         public Company Company
         {
             get { return company; }
             set { company = value; }
         }
 
+        /// <summary>
+        /// The creation date and time of the reservation.
+        /// </summary>
         private DateTime createDate;
         public DateTime CreateDate
         {
             get { return createDate; }
             set { createDate = value; }
-        }
-
-        public Reservation()
-        {
         }
 
         private void ValidateEndDate(DateTime endDate)

@@ -6,18 +6,20 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
-using UserInteface.Pages;
 using UserInteface.ViewModels;
 
 
 namespace UserInteface.Lib
 {
     // source https://mui.codeplex.com/discussions/445631
+    /// <summary>
+    /// NavigationService to navigate between ViewModels
+    /// </summary>
     public class NavigationService : INavigationService
     {
 
         /// <summary>
-        /// The view model routing.f
+        /// The view model routing.
         /// </summary>
         private static readonly Dictionary<Type, string> viewModelRouting
             = new Dictionary<Type, string>
@@ -115,6 +117,12 @@ namespace UserInteface.Lib
 
 
         // added myself
+        /// <summary>
+        /// Get the parameter passed with the navigation uri.
+        /// </summary>
+        /// <typeparam name="T">Type of the parameter which will be returned</typeparam>
+        /// <param name="e">Navigation event arguments from OnNavigateTo</param>
+        /// <returns>The passed parameter</returns>
         public static T GetParameter<T>(FirstFloor.ModernUI.Windows.Navigation.NavigationEventArgs e) where T: class
         {
             // cheating (need an absolute path)

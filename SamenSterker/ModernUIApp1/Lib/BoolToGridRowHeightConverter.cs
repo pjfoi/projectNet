@@ -7,6 +7,9 @@ namespace UserInteface.Lib
 {
 
     // source : http://stackoverflow.com/a/21884516
+    /// <summary>
+    /// Bool to Grid Row Height Convertor
+    /// </summary>
     [ValueConversion(typeof(bool), typeof(GridLength))]
     public class BoolToGridRowHeightConverter : IValueConverter
     {
