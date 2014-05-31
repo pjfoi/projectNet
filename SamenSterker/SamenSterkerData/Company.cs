@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace SamenSterkerData
 {
     /// <summary>
     /// A company model 
     /// </summary>
-    public class Company : BaseModel
+    public class Company : ModelValidation
     {
         private int id;
         private string name;
@@ -24,49 +25,74 @@ namespace SamenSterkerData
         public int Id
         {
             get { return id; }
-            set { id = value; }
+            set 
+            {
+                id = value;
+                ValidateProperty(value);
+            }
         }
         
         /// <summary>
         /// The name of the company.
-        /// </summary>
+        /// </sum-mary>
+        [Required]
         public string Name
         {
             get { return name; }
-            set { name = value; }
+            set 
+            { 
+                name = value;
+                ValidateProperty(value);
+            }
         }
         
         /// <summary>
         /// The street where the company is located.
         /// </summary>
+        [Required]
         public string Street
         {
             get { return street; }
-            set { street = value; }
+            set 
+            { 
+                street = value;
+                ValidateProperty(value);
+            }
         }
         
         /// <summary>
         /// The zipcode of the city where the company is
         /// located.
         /// </summary>
+        [Required]
         public int Zipcode
         {
             get { return zipcode; }
-            set { zipcode = value; }
+            set 
+            { 
+                zipcode = value;
+                ValidateProperty(value);
+            }
         }
         
         /// <summary>
         /// The city where the company is located.
         /// </summary>
+        [Required]
         public string City
         {
             get { return city; }
-            set { city = value; }
+            set 
+            { 
+                city = value;
+                ValidateProperty(value);
+            }
         }
         
         /// <summary>
         /// The country where the company is located.
         /// </summary>
+        [Required]
         public string Country
         {
             get { return country; }
@@ -76,32 +102,44 @@ namespace SamenSterkerData
         /// <summary>
         /// The main email address of the company.
         /// </summary>
+        [Required]
+        [EmailAddress]
         public string Email
         {
             get { return email; }
             set
             { 
                 email = value;
-                ValidateEmailAddress(email);
+                ValidateProperty(value);
             }
         }
         
         /// <summary>
         /// The telephone number of the company.
         /// </summary>
+        [Required]
         public string Phone
         {
             get { return phone; }
-            set { phone = value; }
+            set 
+            { 
+                phone = value;
+                ValidateProperty(value);
+            }
         }
 
         /// <summary>
         /// The number of employees of the company.
         /// </summary>
+        [Required]
         public int Employees
         {
             get { return employees; }
-            set { employees = value; }
+            set 
+            { 
+                employees = value;
+                ValidateProperty(value);
+            }
         }
 
         /// <summary>
@@ -113,26 +151,28 @@ namespace SamenSterkerData
             return String.Format("{0} ({1})", Name, Id);
         }
 
+
         /// <summary>
-        /// Checks if the specified email address is valid. 
-        /// If not a validation error is stored.
+        /// Is the specified object equal to the company.
         /// </summary>
-        /// <param name="email">An email address.</param>
-        public void ValidateEmailAddress(string email)
+        /// <param name="obj">Object to check for equality</param>
+        /// <returns>Equal or not</returns>
+        public override bool Equals(object obj)
         {
-            // source regex : http://stackoverflow.com/a/6893571
-            string regex = @"^[\w!#$%&'*+\-/=?\^_`{|}~]+(\.[\w!#$%&'*+\-/=?\^_`{|}~]+)*"
-                           + "@"
-                           + @"((([\-\w]+\.)+[a-zA-Z]{2,4})|(([0-9]{1,3}\.){3}[0-9]{1,3}))$";
+            if (obj == null || !(obj is Company))
+                return false;
 
-            ICollection<string> validationErrors = new List<string>();
-
-            if (! System.Text.RegularExpressions.Regex.IsMatch(email, regex))
-            {
-                validationErrors.Add("Gelieve een geldig emailadres in te vullen.");
-            }
-
-            UpdateValidationErrors("Email", validationErrors);
+            return ((Company)obj).Id == this.Id;
         }
+
+        /// <summary>
+        /// Get a hashcode for the company.
+        /// </summary>
+        /// <returns>An hashcode</returns>
+        public override int GetHashCode()
+        {
+            return Id.GetHashCode();
+        }
+
     }
 }

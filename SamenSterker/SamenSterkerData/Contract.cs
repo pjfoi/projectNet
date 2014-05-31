@@ -1,23 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
 
 namespace SamenSterkerData
 {
     /// <summary>
     /// A Contract Model
     /// </summary>
-    public class Contract
+    public class Contract : ModelValidation
     {
         private int id;
         private int number;
         private DateTime startDate;
         private DateTime endDate;
-        private int companyId;
         private Company company;
-        private int contractFormulaId;
         private ContractFormula formula;
 
         /// <summary>
@@ -32,28 +27,57 @@ namespace SamenSterkerData
         /// <summary>
         /// The number of the contract.
         /// </summary>
+        [Required]
         public int Number
         {
             get { return number; }
-            set { number = value; }
+            set 
+            {
+                number = value;
+                ValidateProperty(value);
+            }
         }
 
         /// <summary>
         /// The start date of the contract.
         /// </summary>
+        [Required]
         public DateTime StartDate
         {
             get { return startDate; }
-            set { startDate = value; }
+            set 
+            {
+                startDate = value;
+                ValidateProperty(value);
+            }
         }
 
         /// <summary>
         /// The end date of the contract.
         /// </summary>
+        [Required]
         public DateTime EndDate
         {
             get { return endDate; }
-            set { endDate = value; }
+            set
+            {
+                endDate = value;
+                ValidateProperty(value);
+            }
+        }
+
+        /// <summary>
+        /// The company of this contract.
+        /// </summary>
+        [Required]
+        public Company Company
+        {
+            get { return company; }
+            set
+            {
+                company = value;
+                ValidateProperty(value);
+            }
         }
 
         /// <summary>
@@ -61,8 +85,21 @@ namespace SamenSterkerData
         /// </summary>
         public int CompanyId
         {
-            get { return companyId; }
-            set { companyId = value; }
+            get { return (Company == null) ? 0 : Company.Id; }
+        }
+
+        /// <summary>
+        /// The contract formula of this contract.
+        /// </summary>
+        [Required]
+        public ContractFormula Formula
+        {
+            get { return formula; }
+            set
+            {
+                formula = value;
+                ValidateProperty(value);
+            }
         }
 
         /// <summary>
@@ -70,27 +107,29 @@ namespace SamenSterkerData
         /// </summary>
         public int ContractFormulaId
         {
-            get { return contractFormulaId; }
-            set { contractFormulaId = value; }
+            get { return (Formula == null) ? 0 : Formula.Id; }
         }
 
         /// <summary>
-        /// The company of this contract.
+        /// Is the specified object equal to the contract.
         /// </summary>
-        public Company Company
+        /// <param name="obj">Object to check for equality</param>
+        /// <returns>Equal or not</returns>
+        public override bool Equals(object obj)
         {
-            get { return company; }
-            set { company = value; }
+            if (obj == null || !(obj is Contract))
+                return false;
+  
+            return ((Contract)obj).Id == this.Id;
         }
 
         /// <summary>
-        /// The contract formula of this contract.
+        /// Get a hashcode for the contract.
         /// </summary>
-        public ContractFormula Formula
+        /// <returns>An hashcode</returns>
+        public override int GetHashCode()
         {
-            get { return formula; }
-            set { formula = value; }
+            return Id.GetHashCode();
         }
-
     }
 }

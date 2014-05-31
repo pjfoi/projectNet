@@ -77,5 +77,27 @@ namespace SamenSterkerData
         {
             return String.Format("{0} (id {1})", Description, Id);
         }
+
+        /// <summary>
+        /// Is the specified object equal to the contract.
+        /// </summary>
+        /// <param name="obj">Object to check for equality</param>
+        /// <returns>Equal or not</returns>
+        public override bool Equals(object obj)
+        {
+            if (obj == null || !(obj is ContractFormula))
+                return false;
+
+            return ((ContractFormula)obj).Id == this.Id;
+        }
+
+        /// <summary>
+        /// Get a hashcode for the contract formula.
+        /// </summary>
+        /// <returns>An hashcode</returns>
+        public override int GetHashCode()
+        {
+            return Id.GetHashCode();
+        }
     }
 }

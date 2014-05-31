@@ -94,15 +94,14 @@ namespace UserInteface.ViewModels
         {
             SaveCommand = new DelegateCommand(execute: (obj) =>
             {
-                SetCompanyIdIfClient();
+                SetCompanyIfClient();
                 SetEndDateBasedOnFormula();
 
-                // check if all required fields have been filled in
-                int nbFieldsLeftOpen = GetNbRequiredFieldsLeftOpen();
-                if (nbFieldsLeftOpen > 0)
+                Contract.Validate();
+                if (Contract.HasErrors)
                 {
                     Xceed.Wpf.Toolkit.MessageBox.Show(
-                        String.Format("U hebt {0} veld(en) niet ingevuld.", nbFieldsLeftOpen),
+                        "U hebt niet alle velden correct ingevuld.",
                         "Misukt", System.Windows.MessageBoxButton.OK
                     );
                     return;
@@ -129,37 +128,24 @@ namespace UserInteface.ViewModels
             });
         }
 
-        private void SetCompanyIdIfClient()
+        private void SetCompanyIfClient()
         {
             Auth auth = ((App)App.Current).Auth;
             if (auth.isClient)
             {
-                Contract.CompanyId = auth.User.CompanyId;
+                Contract.Company = auth.User.Company;
             }
         }
 
         private void SetEndDateBasedOnFormula()
         {
-            SetContractFormula();
-            Contract.EndDate = Contract.StartDate.AddMonths(
-                Contract.Formula.PeriodInMonths
-            );
-        }
-
-        private void SetContractFormula()
-        {
-            Contract.Formula = Formulas.FirstOrDefault(
-                (f) => f.Id == Contract.ContractFormulaId
-            );
-        }
-
-        private int GetNbRequiredFieldsLeftOpen()
-        {
-            return NbRequiredFieldsOpen(
-                Contract.CompanyId,
-                Contract.ContractFormulaId,
-                Contract.StartDate
-            );
+            //SetContractFormula();
+            if (Contract.Formula != null)
+            {
+                Contract.EndDate = Contract.StartDate.AddMonths(
+                    Contract.Formula.PeriodInMonths
+                );
+            }
         }
 
         /// <summary>

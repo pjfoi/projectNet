@@ -40,20 +40,17 @@
 
                     <TextBlock Grid.Row="3" Grid.Column="0" Text="Formule" Margin="0,5" />
                     <ComboBox Grid.Row="3" Grid.Column="1" Margin="0,5"
+                              SelectedItem="{Binding Path=Contract.Formula}"
                               ItemsSource="{Binding Formulas}"
-                              SelectedValuePath="Id"
                               DisplayMemberPath="Description"
-                              SelectedValue="{Binding Path=Contract.ContractFormulaId}"
                     />
 
                     <TextBlock Grid.Row="4" Grid.Column="0" Text="Bedrijf" Margin="0,5" />
                     <ComboBox Grid.Row="4" Grid.Column="1" Margin="0,5"
+                              SelectedItem="{Binding Path=Contract.Company}"
                               ItemsSource="{Binding Companies}"
-                              SelectedValuePath="Id"
                               DisplayMemberPath="Name"
-                              SelectedValue="{Binding Path=Contract.CompanyId}"
                     />
-                    <!--SelectedValue="{Binding Path=Name}"-->
 
                     <Button Height="25" Width="75" HorizontalAlignment="Left" 
                             Grid.Row="5" Grid.Column="5" Margin="0,5"

@@ -95,16 +95,6 @@ namespace SamenSterkerData
         /// <returns>Number of affected rows.</returns>
         public static int Save(Contract contract)
         {
-            if (contract.CompanyId == 0 && contract.Company != null)
-            {
-                contract.CompanyId = contract.Company.Id;
-            }
-
-            if (contract.ContractFormulaId == 0 && contract.Formula != null)
-            {
-                contract.ContractFormulaId = contract.Formula.Id;
-            }
-
             using (SqlConnection connection = SamenSterkerDB.GetConnection())
             {
                 if(ExistsConflictingContract(contract, connection))

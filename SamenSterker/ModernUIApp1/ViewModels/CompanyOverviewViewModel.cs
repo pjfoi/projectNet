@@ -36,7 +36,6 @@ namespace UserInteface.ViewModels
             {
                 Contract contract = new Contract();
                 contract.Company = GetFirstSelectedItem();
-                contract.CompanyId = contract.Company.Id;
 
                 Navigator.Navigate<ContractEditViewModel>(contract);
             },

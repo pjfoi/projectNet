@@ -4,11 +4,10 @@ namespace SamenSterkerData
     /// <summary>
     /// A User Model.
     /// </summary>
-    public class User : BaseModel
+    public class User : ModelValidation
     {
         private int id;
         private string username;
-        private int companyId;
         private Company company;
 
         /// <summary>
@@ -30,21 +29,21 @@ namespace SamenSterkerData
         }
 
         /// <summary>
-        /// The id of the company of the user.
-        /// </summary>
-        public int CompanyId
-        {
-            get { return companyId; }
-            set { companyId = value; }
-        }
-
-        /// <summary>
         /// The company of the user.
         /// </summary>
         public Company Company
         {
-            get { return company;  }
-            set { company = value;  }
+            get { return company; }
+            set { company = value; }
         }
+
+        /// <summary>
+        /// The id of the company of the user.
+        /// </summary>
+        public int CompanyId
+        {
+            get { return Company.Id; }
+        }
+
     }
 }

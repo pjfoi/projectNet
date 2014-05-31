@@ -108,18 +108,6 @@ namespace SamenSterkerData
         /// <returns>Number of affected rows.</returns>
         public static int Save(Reservation reservation)
         {
-            // set LocationId if Location is specifified
-            if (reservation.LocationId == 0 && reservation.Location != null)
-            {
-                reservation.LocationId = reservation.Location.Id;
-            }
-
-            // set CompanyId if Company is specifified
-            if (reservation.CompanyId == 0 && reservation.Company != null)
-            {
-                reservation.CompanyId = reservation.Company.Id;
-            }
-
             using (SqlConnection connection = SamenSterkerDB.GetConnection())
             {
                 int rowsAffected = connection.Execute(
@@ -207,7 +195,7 @@ namespace SamenSterkerData
 
                 // is the limit of the contract formula not exceeded 
                 int limit = contract.Formula.MaxUsageHoursPerPeriod;
-                if (contract.Formula.MaxUsageHoursPerPeriod > 0)
+                if (limit > 0)
                 {
                     TimeSpan timeUsed = new TimeSpan(0, GetMinutesUsedOfContract(contract, connection), 0);
                     TimeSpan timeLeft = new TimeSpan(limit, 0, 0).Subtract(timeUsed);
@@ -228,30 +216,33 @@ namespace SamenSterkerData
 
         private static bool IsLocationFree(Reservation reservation, SqlConnection connection)
         {
-            const string selectConflictingReservations =
-                @"SELECT COUNT(*) FROM Reservation
-                  WHERE LocationId = @LocationId
-                    AND (@StartDate BETWEEN StartDate AND EndDate
-                        OR @EndDate BETWEEN StartDate And EndDate)
-                    AND Id != @Id";
-            int nbConflicts = connection.Query<int>(
-                selectConflictingReservations, reservation
+            const string selectLocationIsFree =
+                @"SELECT CAsT(
+                    CASE WHEN ( EXISTS(
+                      SELECT r.* FROM Reservation r
+                      WHERE r.LocationId = @LocationId
+                        AND (@StartDate BETWEEN r.StartDate AND r.EndDate
+                            OR @EndDate BETWEEN r.StartDate AND r.EndDate)
+                        AND r.Id != @Id
+                    )) THEN 0 ELSE 1 END
+                  AS BIT)";
+            return connection.Query<bool>(
+                selectLocationIsFree, reservation
             ).Single();
-            return nbConflicts == 0;
         }
 
         private static int GetMinutesUsedOfContract(
             Contract contract, SqlConnection connection)
         {
             const string selectTotalMinutes =
-                @"SELECT SUM( DATEDIFF(mi, r.StartDate, r.EndDate) )
-                  FROM Reservations r
+                @"SELECT COALESCE( SUM(DATEDIFF(mi, r.StartDate, r.EndDate)), 0)
+                  FROM Reservation r
                   WHERE r.CompanyId = @CompanyId
                     AND r.StartDate BETWEEN @StartDate AND @EndDate
-                    AND r.EndDate BETWEEN @StartDate AND @EndDate
-                    AND r.Id != @ReservationId";
+                    AND r.EndDate BETWEEN @StartDate AND @EndDate";
+                    //AND r.Id != @ReservationId"; for update !!
             int nbMinutes = connection.Query<int>(
-                selectTotalMinutes, contract
+                selectTotalMinutes, contract //{ ReservationId =  }
             ).Single();
             return nbMinutes;
         }

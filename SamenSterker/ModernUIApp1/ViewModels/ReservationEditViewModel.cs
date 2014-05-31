@@ -95,14 +95,13 @@ namespace UserInteface.ViewModels
         {
             SaveCommand = new DelegateCommand(execute: (obj) =>
             {
-                SetCompanyIdIfClient();
+                SetCompanyIfClient();
 
-                // check if all required fields have been filled in
-                int nbFieldsLeftOpen = GetNbRequiredFieldsLeftOpen();
-                if (nbFieldsLeftOpen > 0)
+                Reservation.Validate();
+                if (Reservation.HasErrors)
                 {
                     Xceed.Wpf.Toolkit.MessageBox.Show(
-                        String.Format("U hebt {0} veld(en) niet ingevuld.", nbFieldsLeftOpen), 
+                        "U hebt niet alle velden correct ingevuld.",
                         "Misukt", System.Windows.MessageBoxButton.OK
                     );
                     return;
@@ -132,23 +131,13 @@ namespace UserInteface.ViewModels
             });
         }
 
-        private void SetCompanyIdIfClient()
+        private void SetCompanyIfClient()
         {
             Auth auth = ((App)App.Current).Auth;
             if (auth.isClient)
             {
-                Reservation.CompanyId = auth.User.CompanyId;
+                Reservation.Company = auth.User.Company;
             }
-        }
-
-        private int GetNbRequiredFieldsLeftOpen()
-        {
-            return NbRequiredFieldsOpen(
-                Reservation.StartDate,
-                Reservation.EndDate,
-                Reservation.LocationId,
-                Reservation.CompanyId
-            );
         }
 
         /// <summary>

@@ -1,20 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace SamenSterkerData
 {
     /// <summary>
     /// A Reservation Model.
     /// </summary>
-    public class Reservation : BaseModel
+    public class Reservation : ModelValidation
     {
         private int id;
         private int number;
         private DateTime startDate;
         private DateTime endDate;
-        private int locationId;
+        private DateTime createDate;
         private Location location;
-        private int companyId;
         private Company company;
 
         /// <summary>
@@ -29,35 +29,70 @@ namespace SamenSterkerData
         /// <summary>
         /// The number of the reservation.
         /// </summary>
+        [Required]
         public int Number
         {
             get { return number; }
-            set { number = value; }
+            set
+            {
+                number = value;
+                ValidateProperty(value);
+            }
         }
 
         /// <summary>
         /// The start date and time of the reservation.
         /// </summary>
+        [Required]
         public DateTime StartDate
         {
             get { return startDate; }
             set 
             {
                 startDate = value;
-                ValidateEndDate(EndDate);
+                ValidateProperty(value);
             }
         }
 
         /// <summary>
         /// The end date and time of the reservation.
         /// </summary>
+        [Required]
+        [Foolproof.GreaterThan("StartDate")]
         public DateTime EndDate
         {
             get { return endDate; }
             set 
-            { 
+            {
                 endDate = value;
-                ValidateEndDate(endDate);
+                ValidateProperty(value);
+            }
+        }
+
+        /// <summary>
+        /// The creation date and time of the reservation.
+        /// </summary>
+        public DateTime CreateDate
+        {
+            get { return createDate; }
+            set
+            {
+                createDate = value;
+                ValidateProperty(value);
+            }
+        }
+
+        /// <summary>
+        /// The location of the reservation.
+        /// </summary>
+        [Required]
+        public Location Location
+        {
+            get { return location; }
+            set
+            {
+                location = value;
+                ValidateProperty(value);
             }
         }
 
@@ -66,17 +101,21 @@ namespace SamenSterkerData
         /// </summary>
         public int LocationId
         {
-            get { return locationId; }
-            set { locationId = value; }
+            get { return (Location == null) ? 0 : Location.Id; }
         }
 
         /// <summary>
-        /// The location of the reservation.
+        /// The company of the reservation.
         /// </summary>
-        public Location Location
+        [Required]
+        public Company Company
         {
-            get { return location; }
-            set { location = value; }
+            get { return company; }
+            set
+            {
+                company = value;
+                ValidateProperty(value);
+            }
         }
 
         /// <summary>
@@ -84,39 +123,30 @@ namespace SamenSterkerData
         /// </summary>
         public int CompanyId
         {
-            get { return companyId; }
-            set { companyId = value; }
+            get { return (Company == null) ? 0 : Company.Id; }
         }
 
         /// <summary>
-        /// The company of the reservation.
+        /// Is the specified object equal to the reservation.
         /// </summary>
-        public Company Company
+        /// <param name="obj">Object to check for equality</param>
+        /// <returns>Equal or not</returns>
+        public override bool Equals(object obj)
         {
-            get { return company; }
-            set { company = value; }
+            if (obj == null || !(obj is Reservation))
+                return false;
+
+            return ((Reservation)obj).Id == this.Id;
         }
 
         /// <summary>
-        /// The creation date and time of the reservation.
+        /// Get a hashcode for the reservation.
         /// </summary>
-        private DateTime createDate;
-        public DateTime CreateDate
+        /// <returns>An hashcode</returns>
+        public override int GetHashCode()
         {
-            get { return createDate; }
-            set { createDate = value; }
+            return Id.GetHashCode();
         }
 
-        private void ValidateEndDate(DateTime endDate)
-        {
-            ICollection<string> validationErrors = new List<string>();
-
-            if (StartDate != null && !(endDate > StartDate))
-            {
-                validationErrors.Add("Het einde van de reservatie moet na het begin liggen.");
-            }
-
-            UpdateValidationErrors("EndDate", validationErrors);
-        }
     }
 }

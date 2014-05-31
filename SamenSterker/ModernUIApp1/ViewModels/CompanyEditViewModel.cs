@@ -47,12 +47,11 @@ namespace UserInteface.ViewModels
         {
             SaveCommand = new DelegateCommand(execute: (obj) =>
             {
-                // check if all required fields have been filled in
-                int nbFieldsLeftOpen = GetNbRequiredFieldsLeftOpen();
-                if (nbFieldsLeftOpen > 0)
+                Company.Validate();
+                if (Company.HasErrors)
                 {
                     Xceed.Wpf.Toolkit.MessageBox.Show(
-                        String.Format("U hebt {0} veld(en) niet ingevuld.", nbFieldsLeftOpen),
+                        "U hebt niet alle velden correct ingevuld.",
                         "Misukt", System.Windows.MessageBoxButton.OK
                     );
                     return;
@@ -85,20 +84,6 @@ namespace UserInteface.ViewModels
         public void ShowCompany(Company company)
         {
             Company = company;
-        }
-
-        private int GetNbRequiredFieldsLeftOpen()
-        {
-            return NbRequiredFieldsOpen(
-                Company.Name,
-                Company.Street,
-                Company.Zipcode,
-                Company.City,
-                Company.Country,
-                Company.Email,
-                Company.Phone,
-                Company.Employees
-            );
         }
 
     }
